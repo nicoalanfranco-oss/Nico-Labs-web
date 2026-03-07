@@ -144,12 +144,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const typingId = addTypingIndicator();
 
         try {
-            const response = await fetch('https://n8n.nico-family.com/webhook/70b3ad47-949c-4964-bfab-528b03332d47/chat', {
+            const response = await fetch('https://n8n.nico-family.com/webhook/f535820b-22eb-438f-930f-d0f8fe2f3a12/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ message: text }) // Assuming the webhook expects { "message": "..." }
+                body: JSON.stringify({ chatInput: text })
             });
 
             // Remove typing indicator
@@ -157,19 +157,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 const responseData = await response.json();
-                // Assuming response is JSON with an 'output' or 'text' field. 
-                // Adjust based on actual n8n output structure. 
-                // If it returns plain text, use response.text()
-                const botReply = responseData.output || responseData.text || responseData.message || JSON.stringify(responseData);
+                // n8n Chat Trigger typically returns { output: "..." }
+                const botReply = responseData.output || responseData.text || responseData.message || (typeof responseData === 'string' ? responseData : 'Respuesta recibida.');
                 addMessage(botReply, 'bot');
             } else {
-                addMessage('Lo siento, hubo un error de conexión.', 'bot');
+                addMessage('Lo siento, hubo un error de conexión con n8n.', 'bot');
             }
 
         } catch (error) {
             removeMessage(typingId);
             console.error('Chat error:', error);
-            addMessage('Error al conectar con el servidor.', 'bot');
+            addMessage('Error al conectar con el servidor de IA.', 'bot');
         }
     }
 
@@ -180,20 +178,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function addMessage(text, sender) {
         const div = document.createElement('div');
+        const id = 'msg-' + Date.now();
+        div.id = id;
         div.classList.add('message', sender);
         div.textContent = text;
         chatMessages.appendChild(div);
         chatMessages.scrollTop = chatMessages.scrollHeight;
-        return div.id = 'msg-' + Date.now();
+        return id;
+    }
+
+    function removeMessage(id) {
+        const el = document.getElementById(id);
+        if (el) el.remove();
     }
 
     function addTypingIndicator() {
         const div = document.createElement('div');
+        const id = 'typing-' + Date.now();
+        div.id = id;
         div.classList.add('message', 'bot', 'typing');
         div.innerHTML = '<span></span><span></span><span></span>';
         chatMessages.appendChild(div);
         chatMessages.scrollTop = chatMessages.scrollHeight;
-        return div.id = 'typing-' + Date.now();
+        return id;
     }
 
     // Generic Modal Handler
