@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Remove typing indicator
             removeMessage(typingId);
 
-            // Always read as text first, then try to parse as JSON
+            // Always read as text first
             const rawText = await response.text();
             console.log('n8n raw response [status=' + response.status + ']:', rawText);
 
@@ -175,20 +175,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            let botReply = rawText; // default: show raw text
+            let botReply = '';
 
             if (rawText) {
                 try {
+                    // Try parsing as standard JSON first
                     const parsed = JSON.parse(rawText);
-                    // n8n AI Agent can return { output: "..." } or [{ output: "..." }]
                     if (Array.isArray(parsed)) {
                         botReply = parsed[0]?.output || parsed[0]?.text || parsed[0]?.message || rawText;
                     } else {
                         botReply = parsed.output || parsed.text || parsed.message || rawText;
                     }
                 } catch (jsonErr) {
-                    // Not JSON — use raw text as-is (plain text response)
-                    botReply = rawText;
+                    // It failed standard JSON parse, it might be NDJSON (streaming format)
+                    // The AI Agent returns lines like: {"type":"item","content":"..."}
+                    const lines = rawText.split('\n').filter(line => line.trim() !== '');
+                    let combinedText = '';
+                    let isNdjson = false;
+
+                    for (const line of lines) {
+                        try {
+                            const parsedLine = JSON.parse(line);
+                            if (parsedLine.type === 'item' && parsedLine.content) {
+                                combinedText += parsedLine.content;
+                                isNdjson = true;
+                            }
+                        } catch (e) {
+                            // ignore lines that aren't valid JSON
+                        }
+                    }
+
+                    if (isNdjson && combinedText) {
+                        botReply = combinedText;
+                    } else {
+                        // Not JSON, not NDJSON, just plain text
+                        botReply = rawText;
+                    }
                 }
             } else {
                 botReply = '(n8n devolvió una respuesta vacía — verifica que el Agente AI esté conectado al Chat Trigger)';
