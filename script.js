@@ -234,6 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setupModal('project-gym', 'project-modal');
     setupModal('project-pro', 'pro-modal');
+    setupModal('project-conty', 'conty-modal');
     setupModal('project-comunicados', 'comunicados-modal');
     setupModal('project-redes', 'redes-modal');
     setupModal('project-chatbot', 'chatbot-modal');
