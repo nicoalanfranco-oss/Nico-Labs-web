@@ -143,6 +143,26 @@ document.addEventListener('DOMContentLoaded', () => {
     chatToggle.addEventListener('click', toggleChat);
     chatClose.addEventListener('click', toggleChat);
 
+    // Handle mobile keyboard resize to maintain "WhatsApp-like" push up chat
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", () => {
+            if (chatWidget.classList.contains('active') && window.innerWidth <= 768) {
+                chatWidget.style.height = `${window.visualViewport.height}px`;
+                chatWidget.style.top = `${window.visualViewport.offsetTop}px`;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } else {
+                chatWidget.style.height = '';
+                chatWidget.style.top = '';
+            }
+        });
+
+        window.visualViewport.addEventListener("scroll", () => {
+            if (chatWidget.classList.contains('active') && window.innerWidth <= 768) {
+                chatWidget.style.top = `${window.visualViewport.offsetTop}px`;
+            }
+        });
+    }
+
     // Send Message Logic
     async function sendMessage() {
         const text = chatInput.value.trim();
