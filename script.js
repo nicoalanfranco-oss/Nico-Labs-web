@@ -153,9 +153,9 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('https://n8n.nico-family.com/webhook/f535820b-22eb-438f-930f-d0f8fe2f3a12/chat', {
                 method: 'POST',
+                mode: 'cors',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json, text/plain, */*',
                 },
                 body: JSON.stringify({
                     chatInput: text,
@@ -166,43 +166,43 @@ document.addEventListener('DOMContentLoaded', () => {
             // Remove typing indicator
             removeMessage(typingId);
 
-            if (response.ok) {
-                // Try JSON first, fall back to plain text
-                const contentType = response.headers.get('content-type') || '';
-                let botReply = 'Respuesta recibida.';
+            // Always read as text first, then try to parse as JSON
+            const rawText = await response.text();
+            console.log('n8n raw response [status=' + response.status + ']:', rawText);
 
-                if (contentType.includes('application/json')) {
-                    const responseData = await response.json();
-                    console.log('n8n JSON response:', responseData);
-                    // n8n AI Agent returns { output: "..." }
-                    // Handle both array and object formats
-                    if (Array.isArray(responseData)) {
-                        botReply = responseData[0]?.output || responseData[0]?.text || responseData[0]?.message || JSON.stringify(responseData[0]);
-                    } else {
-                        botReply = responseData.output || responseData.text || responseData.message || responseData.chatInput || JSON.stringify(responseData);
-                    }
-                } else {
-                    // Plain text response
-                    botReply = await response.text();
-                    console.log('n8n text response:', botReply);
-                }
-
-                addMessage(botReply, 'bot');
-            } else {
-                console.error('n8n HTTP error:', response.status, response.statusText);
-                addMessage('Lo siento, el asistente no está disponible en este momento.', 'bot');
+            if (!response.ok) {
+                addMessage('⚠️ Error ' + response.status + ': ' + rawText, 'bot');
+                return;
             }
+
+            let botReply = rawText; // default: show raw text
+
+            if (rawText) {
+                try {
+                    const parsed = JSON.parse(rawText);
+                    // n8n AI Agent can return { output: "..." } or [{ output: "..." }]
+                    if (Array.isArray(parsed)) {
+                        botReply = parsed[0]?.output || parsed[0]?.text || parsed[0]?.message || rawText;
+                    } else {
+                        botReply = parsed.output || parsed.text || parsed.message || rawText;
+                    }
+                } catch (jsonErr) {
+                    // Not JSON — use raw text as-is (plain text response)
+                    botReply = rawText;
+                }
+            } else {
+                botReply = '(n8n devolvió una respuesta vacía — verifica que el Agente AI esté conectado al Chat Trigger)';
+            }
+
+            addMessage(botReply, 'bot');
 
         } catch (error) {
             removeMessage(typingId);
-            console.error('Chat fetch error:', error);
-            // More specific error message to help diagnose
-            if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                addMessage('No se pudo conectar con n8n. Verifica que el webhook esté activo.', 'bot');
-            } else {
-                addMessage('Error al procesar tu mensaje. Intenta de nuevo.', 'bot');
-            }
+            console.error('Chat fetch error:', error.name, error.message, error);
+            // Show REAL error to help diagnose (CORS, network, etc.)
+            addMessage('⚠️ Error técnico: ' + error.name + ' — ' + error.message, 'bot');
         }
+
     }
 
     chatSend.addEventListener('click', sendMessage);
