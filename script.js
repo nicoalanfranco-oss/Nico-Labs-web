@@ -143,25 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     chatToggle.addEventListener('click', toggleChat);
     chatClose.addEventListener('click', toggleChat);
 
-    // Handle mobile keyboard resize to maintain "WhatsApp-like" push up chat
-    if (window.visualViewport) {
-        window.visualViewport.addEventListener("resize", () => {
-            if (chatWidget.classList.contains('active') && window.innerWidth <= 768) {
-                chatWidget.style.height = `${window.visualViewport.height}px`;
-                chatWidget.style.top = `${window.visualViewport.offsetTop}px`;
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            } else {
-                chatWidget.style.height = '';
-                chatWidget.style.top = '';
-            }
-        });
-
-        window.visualViewport.addEventListener("scroll", () => {
-            if (chatWidget.classList.contains('active') && window.innerWidth <= 768) {
-                chatWidget.style.top = `${window.visualViewport.offsetTop}px`;
-            }
-        });
-    }
+    // Removed JS VisualViewport listener, relying completely on robust CSS (100% height and fixed top/bottom) for keyboard response.
 
     // Send Message Logic
     async function sendMessage() {
