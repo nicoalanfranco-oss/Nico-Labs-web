@@ -61,8 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = Object.fromEntries(formData.entries());
 
             try {
-                // Using the test webhook as per plan
-                const response = await fetch('https://n8n.nico-family.com/webhook-test/8fb105dc-8c1b-47c7-bc88-0f0f9a214b9e', {
+                // Using the production webhook for leads
+                const response = await fetch('https://n8n.nico-family.com/webhook/8c0edef8-ada3-4975-a058-835fa90e9bb2', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
