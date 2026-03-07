@@ -120,6 +120,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatSend = document.getElementById('chat-send');
     const chatMessages = document.getElementById('chat-messages');
 
+    // Generate or retrieve a unique session ID for this conversation
+    // sessionStorage resets when the tab is closed (new session = fresh memory)
+    if (!sessionStorage.getItem('nicolabs_session_id')) {
+        sessionStorage.setItem('nicolabs_session_id', 'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9));
+    }
+    const SESSION_ID = sessionStorage.getItem('nicolabs_session_id');
+
     // Toggle Chat
     function toggleChat() {
         chatWidget.classList.toggle('active');
@@ -149,7 +156,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ chatInput: text })
+                body: JSON.stringify({
+                    chatInput: text,
+                    sessionId: SESSION_ID
+                })
             });
 
             // Remove typing indicator
