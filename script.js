@@ -132,6 +132,11 @@ document.addEventListener('DOMContentLoaded', () => {
         chatWidget.classList.toggle('active');
         if (chatWidget.classList.contains('active')) {
             chatInput.focus();
+            if (window.innerWidth <= 768) {
+                document.body.style.overflow = 'hidden';
+            }
+        } else {
+            document.body.style.overflow = '';
         }
     }
 
