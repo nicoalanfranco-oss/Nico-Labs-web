@@ -1647,3 +1647,26 @@ button[type="submit"] {
 .text-center {
     text-align: center;
 }
+
+/* ============================================
+   PRIVACY TRIGGER SECTION
+   ============================================ */
+.privacy-trigger-section {
+    padding: 40px 5%;
+    background: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(0, 242, 255, 0.05);
+    border-bottom: 1px solid rgba(0, 242, 255, 0.05);
+}
+
+#open-privacy {
+    opacity: 0.7;
+    font-size: 0.7rem;
+}
+
+#open-privacy:hover {
+    opacity: 1;
+}
+
+#open-privacy i {
+    margin-right: 8px;
+}
