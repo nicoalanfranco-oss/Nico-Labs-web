@@ -1628,6 +1628,38 @@ button[type="submit"] {
     .nav-links.active {
         display: flex;
     }
+
+    /* Mobile Text & Spacing Polish */
+    section {
+        padding: 60px 5% !important;
+    }
+
+    .hero-title {
+        font-size: clamp(2rem, 8vw, 3.5rem) !important;
+    }
+
+    .section-title {
+        font-size: clamp(1.8rem, 6vw, 2.8rem) !important;
+    }
+
+    .differential-title {
+        font-size: clamp(1.5rem, 5vw, 2.2rem) !important;
+    }
+
+    /* Project List Indentation Fix */
+    .project-features li {
+        display: flex;
+        align-items: flex-start;
+        padding-left: 0 !important;
+        text-indent: 0 !important;
+    }
+
+    .project-features li::before {
+        content: '→';
+        flex-shrink: 0;
+        margin-right: 10px;
+        position: static !important;
+    }
 }
 
 /* ============================================
@@ -1735,7 +1767,7 @@ button[type="submit"] {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .footer-links {
         flex-direction: column;
         gap: 15px;
