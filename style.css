@@ -1371,6 +1371,8 @@ button[type="submit"] {
         bottom: 0 !important;
         width: 100% !important;
         height: 100% !important;
+        max-height: none !important;
+        max-width: none !important;
         margin: 0 !important;
         border-radius: 0 !important;
         transform: translateY(100%) !important;
