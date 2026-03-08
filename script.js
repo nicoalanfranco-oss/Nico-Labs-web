@@ -127,23 +127,62 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const SESSION_ID = sessionStorage.getItem('nicolabs_session_id');
 
+    let originalScrollY = 0;
+
     // Toggle Chat
     function toggleChat() {
         chatWidget.classList.toggle('active');
         if (chatWidget.classList.contains('active')) {
-            chatInput.focus();
             if (window.innerWidth <= 768) {
-                document.body.style.overflow = 'hidden';
+                // Lock the body layout viewport completely to prevent OS keyboard scrolling push
+                originalScrollY = window.scrollY;
+                document.body.style.position = 'fixed';
+                document.body.style.top = `-${originalScrollY}px`;
+                document.body.style.width = '100%';
+
+                // Set initial perfect height and focus
+                setTimeout(() => {
+                    adjustChatHeight();
+                    chatInput.focus();
+                }, 50);
+            } else {
+                chatInput.focus();
             }
         } else {
-            document.body.style.overflow = '';
+            if (window.innerWidth <= 768) {
+                // Restore body layout viewport
+                document.body.style.position = '';
+                document.body.style.top = '';
+                document.body.style.width = '';
+                window.scrollTo(0, originalScrollY);
+                chatWidget.style.height = '';
+            }
         }
     }
 
+    // Dynamically adjust chatbot height to match visual viewport (keyboard area)
+    function adjustChatHeight() {
+        if (window.innerWidth <= 768 && chatWidget.classList.contains('active')) {
+            let vh = window.innerHeight;
+            if (window.visualViewport) {
+                vh = window.visualViewport.height;
+            }
+            chatWidget.style.height = `${vh}px`;
+            chatWidget.style.bottom = 'auto'; // Prevent bottom constraint from stretching it
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Fix iOS Safari scrolling glitch inside the chat
+            window.scrollTo(0, 0);
+        }
+    }
+
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', adjustChatHeight);
+    }
+    window.addEventListener('resize', adjustChatHeight);
+
     chatToggle.addEventListener('click', toggleChat);
     chatClose.addEventListener('click', toggleChat);
-
-    // Removed JS VisualViewport listener, relying completely on robust CSS (100% height and fixed top/bottom) for keyboard response.
 
     // Send Message Logic
     async function sendMessage() {
