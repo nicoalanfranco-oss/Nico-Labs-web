@@ -1227,6 +1227,7 @@ button[type="submit"] {
 
 .chat-messages {
     flex: 1;
+    min-height: 0;
     padding: 15px;
     overflow-y: auto;
     display: flex;
@@ -1369,7 +1370,8 @@ button[type="submit"] {
         left: 0 !important;
         right: 0 !important;
         width: 100% !important;
-        height: 100% !important;
+        height: 100%;
+        /* removed !important to allow JS to override */
         max-height: none !important;
         max-width: none !important;
         margin: 0 !important;
