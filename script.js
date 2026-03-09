@@ -226,7 +226,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({
                     chatInput: text,
-                    sessionId: SESSION_ID
+                    sessionId: SESSION_ID,
+                    cliente: 'NICOLABS',
+                    fuente: 'WEB'
                 })
             });
 
