@@ -1,0 +1,138 @@
+{
+    "name": "Nico Labs Web Contact",
+    "nodes": [
+        {
+            "parameters": {
+                "path": "8c0edef8-ada3-4975-a058-835fa90e9bb2",
+                "responseMode": "lastNode",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2.1,
+            "position": [
+                200,
+                300
+            ],
+            "id": "f7106753-4299-4008-903b-ed423235bffc",
+            "name": "Contact Webhook Trigger",
+            "webhookId": "8c0edef8-ada3-4975-a058-835fa90e9bb2"
+        },
+        {
+            "parameters": {
+                "operation": "insert",
+                "schema": {
+                    "__rl": true,
+                    "value": "nicolabs",
+                    "mode": "list",
+                    "cachedResultName": "nicolabs"
+                },
+                "table": {
+                    "__rl": true,
+                    "value": "leads",
+                    "mode": "list",
+                    "cachedResultName": "leads"
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "first_name": "={{ $json.body.nombre }}",
+                        "last_name": "={{ $json.body.apellido }}",
+                        "email": "={{ $json.body.email }}",
+                        "phone": "={{ $json.body.telefono }}",
+                        "project_interest": "={{ $json.body.proyecto }}"
+                    }
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.6,
+            "position": [
+                400,
+                300
+            ],
+            "id": "67417eef-f3d8-4a6c-8bed-a82f3484f0b7",
+            "name": "Insert Lead",
+            "credentials": {
+                "postgres": {
+                    "id": "zArQZjt49ZmmY41W",
+                    "name": "Postgres account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "sendTo": "contacto@nicolabs.com",
+                "subject": "¡Nuevo Lead desde la Web de Nico Labs!",
+                "message": "={{ 'Tienes un nuevo mensaje de contacto.\\n\\nNombre: ' + $node['Contact Webhook Trigger'].json.body.nombre + ' ' + $node['Contact Webhook Trigger'].json.body.apellido + '\\nEmail: ' + $node['Contact Webhook Trigger'].json.body.email + '\\nTeléfono: ' + $node['Contact Webhook Trigger'].json.body.telefono + '\\nDomicilio: ' + $node['Contact Webhook Trigger'].json.body.domicilio + '\\n\\nProyecto/Mensaje:\\n' + $node['Contact Webhook Trigger'].json.body.proyecto }}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.emailSend",
+            "typeVersion": 2.1,
+            "position": [
+                600,
+                300
+            ],
+            "id": "76162ab8-0e7d-4bfa-bac1-5e5d3c90cb6b",
+            "name": "Send Email Notification"
+        },
+        {
+            "parameters": {
+                "options": {}
+            },
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1.1,
+            "position": [
+                800,
+                300
+            ],
+            "id": "8bbbb405-236b-4e8c-8af3-bbdacbfa7604",
+            "name": "Respond to Webhook"
+        }
+    ],
+    "pinData": {},
+    "connections": {
+        "Contact Webhook Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Insert Lead",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Insert Lead": {
+            "main": [
+                [
+                    {
+                        "node": "Send Email Notification",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Send Email Notification": {
+            "main": [
+                [
+                    {
+                        "node": "Respond to Webhook",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "active": false,
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "versionId": "f90ea238-d7b1-4b2a-a9eb-e366dd2659e5",
+    "meta": {
+        "instanceId": "a0125597e201cfbb91afa60d3cd7b5619045862c702210a5699831c91adf89c7"
+    },
+    "id": "t7LykcMJ2PzH9mWT",
+    "tags": []
+}

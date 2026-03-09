@@ -120,6 +120,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatSend = document.getElementById('chat-send');
     const chatMessages = document.getElementById('chat-messages');
 
+    // Intro animation for the toggle
+    chatToggle.style.opacity = '0';
+    chatToggle.style.transform = 'scale(0) rotate(-45deg)';
+    setTimeout(() => {
+        chatToggle.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        chatToggle.style.opacity = '1';
+        chatToggle.style.transform = 'scale(1) rotate(0deg)';
+    }, 2000);
+
     // Generate or retrieve a unique session ID for this conversation
     // sessionStorage resets when the tab is closed (new session = fresh memory)
     if (!sessionStorage.getItem('nicolabs_session_id')) {
@@ -177,7 +186,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', adjustChatHeight);
+        window.visualViewport.addEventListener('resize', () => {
+            adjustChatHeight();
+            // Ensure keyboard doesn't hide the focused input
+            if (document.activeElement === chatInput) {
+                setTimeout(() => chatInput.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+            }
+        });
+        window.visualViewport.addEventListener('scroll', () => {
+            // Block iOS Safari from scrolling the underlying page when keyboard is up
+            if (chatWidget.classList.contains('active')) {
+                window.scrollTo(0, 0);
+            }
+        });
     }
     window.addEventListener('resize', adjustChatHeight);
 
