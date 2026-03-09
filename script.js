@@ -232,11 +232,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             });
 
-            // Remove typing indicator
-            removeMessage(typingId);
-
-            // Always read as text first
+            // Always read as text first (keep typing indicator visible until body is ready)
             const rawText = await response.text();
+
+            // Remove typing indicator only after the full response body is received
+            removeMessage(typingId);
             console.log('n8n raw response [status=' + response.status + ']:', rawText);
 
             if (!response.ok) {
