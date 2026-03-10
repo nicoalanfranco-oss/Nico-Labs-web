@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 // Using the production webhook for leads
-                const response = await fetch('https://n8n.nico-family.com/webhook/8c0edef8-ada3-4975-a058-835fa90e9bb2', {
+                const response = await fetch('https://n8n.nico-family.com/webhook/a1e59b22-4770-43dc-b4bd-42186903cfd4', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
