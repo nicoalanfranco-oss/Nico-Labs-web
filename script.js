@@ -240,12 +240,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.body.style.top = `-${originalScrollY}px`;
                 document.body.style.width = '100%';
 
-                // Set initial perfect height and focus
+                // Set initial perfect height (no autofocus to prevent keyboard shift on mobile)
                 setTimeout(() => {
                     adjustChatHeight();
-                    chatInput.focus();
                 }, 50);
             } else {
+                // Focus only on desktop
                 chatInput.focus();
             }
         } else {
