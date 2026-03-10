@@ -1116,7 +1116,13 @@ button[type="submit"] {
     position: fixed;
     bottom: 30px;
     right: 30px;
-    z-index: 2000;
+    z-index: 9999;
+    /* Ensure it floats above hero overlays and page content */
+}
+
+/* Hide the toggle button completely when chat is active */
+#chatbot-container.chat-active .chat-toggle {
+    display: none;
 }
 
 .chat-toggle {
@@ -1369,10 +1375,11 @@ button[type="submit"] {
         top: 0 !important;
         left: 0 !important;
         right: 0 !important;
+        bottom: 0 !important;
         width: 100% !important;
-        height: 100%;
-        /* removed !important to allow JS to override */
-        max-height: none !important;
+        height: 100dvh !important;
+        /* Use dvh to prevent shifted layout with keyboards */
+        max-height: 100dvh !important;
         max-width: none !important;
         margin: 0 !important;
         border-radius: 0 !important;

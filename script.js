@@ -231,67 +231,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Toggle Chat
     function toggleChat() {
-        chatWidget.classList.toggle('active');
-        if (chatWidget.classList.contains('active')) {
-            if (window.innerWidth <= 768) {
-                // Lock the body layout viewport completely to prevent OS keyboard scrolling push
-                originalScrollY = window.scrollY;
-                document.body.style.position = 'fixed';
-                document.body.style.top = `-${originalScrollY}px`;
-                document.body.style.width = '100%';
+        const isActive = chatWidget.classList.contains('active');
 
-                // Set initial perfect height and focus
-                setTimeout(() => {
-                    adjustChatHeight();
-                    chatInput.focus();
-                }, 50);
-            } else {
+        if (!isActive) {
+            // Opening chat
+            chatWidget.classList.add('active');
+            chatbotContainer.classList.add('chat-active');
+            // Push state for Android back button to handle the close action
+            history.pushState({ chatOpen: true }, '');
+
+            setTimeout(() => {
                 chatInput.focus();
-            }
+            }, 50);
         } else {
-            if (window.innerWidth <= 768) {
-                // Restore body layout viewport
-                document.body.style.position = '';
-                document.body.style.top = '';
-                document.body.style.width = '';
-                window.scrollTo(0, originalScrollY);
-                chatWidget.style.height = '';
+            // Closing chat via button
+            closeChatUI();
+            // If we are closing via the button, we should theoretically pop the state so we don't trap the user
+            if (history.state && history.state.chatOpen) {
+                history.back(); // This will trigger popstate, but we are already closing UI, so we handle it gracefully below
             }
         }
     }
 
-    // Dynamically adjust chatbot height to match visual viewport (keyboard area)
-    function adjustChatHeight() {
-        if (window.innerWidth <= 768 && chatWidget.classList.contains('active')) {
-            let vh = window.innerHeight;
-            if (window.visualViewport) {
-                vh = window.visualViewport.height;
-            }
-            chatWidget.style.height = `${vh}px`;
-            chatWidget.style.bottom = 'auto'; // Prevent bottom constraint from stretching it
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+    // Helper to actually visually close the chat
+    function closeChatUI() {
+        chatWidget.classList.remove('active');
+        chatbotContainer.classList.remove('chat-active');
+    }
 
-            // Fix iOS Safari scrolling glitch inside the chat
-            window.scrollTo(0, 0);
+    // Android/Browser Back Button Support
+    window.addEventListener('popstate', (e) => {
+        // If state is null or doesn't have chatOpen, we should close the chat if it's open
+        // (This happens when the user presses back while the chat is open)
+        if (chatWidget.classList.contains('active')) {
+            closeChatUI();
         }
-    }
+    });
 
-    if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', () => {
-            adjustChatHeight();
-            // Ensure keyboard doesn't hide the focused input
-            if (document.activeElement === chatInput) {
-                setTimeout(() => chatInput.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
-            }
-        });
-        window.visualViewport.addEventListener('scroll', () => {
-            // Block iOS Safari from scrolling the underlying page when keyboard is up
-            if (chatWidget.classList.contains('active')) {
-                window.scrollTo(0, 0);
-            }
-        });
-    }
-    window.addEventListener('resize', adjustChatHeight);
+    // Note: Manual chat height adjustment via resize listeners was removed 
+    // in favor of pure CSS 100dvh for reliable mobile rendering without shifting.
 
     chatToggle.addEventListener('click', toggleChat);
     chatClose.addEventListener('click', toggleChat);
