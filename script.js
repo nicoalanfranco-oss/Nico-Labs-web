@@ -1,4 +1,87 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    // ── Notification Modal + Confetti ──────────────────────────────────
+    const notifOverlay = document.getElementById('form-notification-overlay');
+    const notifIcon = document.getElementById('notif-icon');
+    const notifTitle = document.getElementById('notif-title');
+    const notifSubtitle = document.getElementById('notif-subtitle');
+    const notifCloseBtn = document.getElementById('notif-close-btn');
+
+    let confettiFrame = null;
+
+    function launchConfetti() {
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const colors = ['#00f2ff', '#ffffff', 'rgba(0,242,255,0.7)', '#73f7ff', '#e2e8f0', '#00bcd4'];
+        const particles = Array.from({ length: 160 }, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * -canvas.height * 0.5 - 20,
+            w: Math.random() * 10 + 5,
+            h: Math.random() * 5 + 2,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360,
+            speed: Math.random() * 3.5 + 1.5,
+            swing: Math.random() * 3 - 1.5,
+            swingSpeed: Math.random() * 0.04 + 0.01,
+            opacity: Math.random() * 0.5 + 0.5
+        }));
+
+        let tick = 0;
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            tick++;
+            let stillVisible = false;
+            particles.forEach(p => {
+                p.y += p.speed;
+                p.x += Math.sin(tick * p.swingSpeed) * p.swing;
+                p.rotation += 4;
+                if (p.y < canvas.height + 20) stillVisible = true;
+                ctx.save();
+                ctx.globalAlpha = p.opacity;
+                ctx.translate(p.x + p.w / 2, p.y + p.h / 2);
+                ctx.rotate((p.rotation * Math.PI) / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                ctx.restore();
+            });
+            if (stillVisible) {
+                confettiFrame = requestAnimationFrame(draw);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+        draw();
+    }
+
+    function stopConfetti() {
+        if (confettiFrame) cancelAnimationFrame(confettiFrame);
+        const canvas = document.getElementById('confetti-canvas');
+        if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function showNotification(type, title, subtitle) {
+        // type: 'success' | 'error'
+        notifIcon.textContent = type === 'success' ? '🚀' : '⚠️';
+        notifTitle.textContent = title;
+        notifSubtitle.innerHTML = subtitle;
+        notifOverlay.classList.add('active');
+        if (type === 'success') launchConfetti();
+    }
+
+    function closeNotification() {
+        notifOverlay.classList.remove('active');
+        stopConfetti();
+    }
+
+    if (notifCloseBtn) notifCloseBtn.addEventListener('click', closeNotification);
+    if (notifOverlay) notifOverlay.addEventListener('click', (e) => {
+        if (e.target === notifOverlay) closeNotification();
+    });
+    // ── End Notification ────────────────────────────────────────────────
+
     // Custom Cursor
     const cursorDot = document.querySelector('.cursor-dot');
     const cursorOutline = document.querySelector('.cursor-outline');
@@ -71,14 +154,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (response.ok) {
-                    alert('¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.');
                     contactForm.reset();
+                    showNotification(
+                        'success',
+                        '¡Solicitud Enviada!',
+                        'Tu mensaje llegó con éxito.<br>El equipo de <strong>Nico Labs</strong> va a contactarte muy pronto.'
+                    );
                 } else {
-                    throw new Error('Error en el envío');
+                    throw new Error('Error en el envío (HTTP ' + response.status + ')');
                 }
             } catch (error) {
                 console.error('Form fetch error:', error.name, error.message, error);
-                alert('Error al enviar: ' + error.name + ' — ' + error.message + '\n\nVerificá que el workflow de n8n esté activado (no solo en modo test).');
+                showNotification(
+                    'error',
+                    'Error al Enviar',
+                    error.name + ' — ' + error.message + '<br><br>Verificá que el workflow de n8n esté <strong>activado</strong>.'
+                );
             } finally {
                 submitBtn.innerText = originalText;
                 submitBtn.disabled = false;

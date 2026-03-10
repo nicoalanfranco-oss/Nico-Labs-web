@@ -1827,3 +1827,114 @@ button[type="submit"] {
         gap: 15px;
     }
 }
+
+/* ============================================
+   FORM NOTIFICATION MODAL (success / error)
+   ============================================ */
+.form-notification-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(5, 11, 12, 0.88);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.form-notification-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+#confetti-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10001;
+}
+
+.form-notification-card {
+    position: relative;
+    z-index: 10002;
+    text-align: center;
+    max-width: 480px;
+    width: 90%;
+    padding: 50px 40px;
+    border-color: rgba(0, 242, 255, 0.25);
+    transform: translateY(60px) scale(0.92);
+    opacity: 0;
+    transition: all 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.form-notification-overlay.active .form-notification-card {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+.notif-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    display: block;
+    opacity: 0;
+    transform: scale(0) rotate(-15deg);
+    transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s;
+}
+
+.form-notification-overlay.active .notif-icon {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+}
+
+.notif-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    font-style: italic;
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
+}
+
+.form-notification-overlay.active .notif-title {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.notif-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 32px;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.45s;
+}
+
+.form-notification-overlay.active .notif-subtitle {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.notif-subtitle strong {
+    color: var(--primary-color);
+}
+
+#notif-close-btn {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.5s ease 0.55s, transform 0.5s ease 0.55s,
+        color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.form-notification-overlay.active #notif-close-btn {
+    opacity: 1;
+    transform: translateY(0);
+}
