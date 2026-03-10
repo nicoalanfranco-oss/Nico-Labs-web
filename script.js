@@ -285,6 +285,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 botReply = '(n8n devolvió una respuesta vacía — verifica que el Agente AI esté conectado al Chat Trigger)';
             }
 
+            // Strip internal n8n tool call traces (e.g. "Calling search_knowledge with input: {...}")
+            botReply = botReply.replace(/Calling \w+ with input:\s*\{[\s\S]*?\}/g, '').trim();
+
             addMessage(botReply, 'bot');
 
         } catch (error) {
