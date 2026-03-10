@@ -77,8 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error('Error en el envío');
                 }
             } catch (error) {
-                console.error('Error:', error);
-                alert('Hubo un error al enviar el mensaje. Por favor intenta nuevamente.');
+                console.error('Form fetch error:', error.name, error.message, error);
+                alert('Error al enviar: ' + error.name + ' — ' + error.message + '\n\nVerificá que el workflow de n8n esté activado (no solo en modo test).');
             } finally {
                 submitBtn.innerText = originalText;
                 submitBtn.disabled = false;
