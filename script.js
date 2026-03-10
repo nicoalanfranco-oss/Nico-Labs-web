@@ -331,7 +331,11 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('n8n raw response [status=' + response.status + ']:', rawText);
 
             if (!response.ok) {
-                addMessage('⚠️ Error ' + response.status + ': ' + rawText, 'bot');
+                showNotification(
+                    'error',
+                    'Error de Conexión',
+                    'El chat no pudo comunicarse con el servidor (HTTP ' + response.status + ').<br>Verificá que n8n esté activo.'
+                );
                 return;
             }
 
@@ -373,7 +377,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             } else {
-                botReply = '(n8n devolvió una respuesta vacía — verifica que el Agente AI esté conectado al Chat Trigger)';
+                showNotification(
+                    'error',
+                    'Sin Respuesta',
+                    ' El agente no devolvió ninguna respuesta.<br>Verificá que el flujo en <strong>n8n</strong> esté correctamente configurado.'
+                );
+                return;
             }
 
             // Helper: strip all "Calling <tool> with input: {...}" traces from n8n
@@ -388,8 +397,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             removeMessage(typingId);
             console.error('Chat fetch error:', error.name, error.message, error);
-            // Show REAL error to help diagnose (CORS, network, etc.)
-            addMessage('⚠️ Error técnico: ' + error.name + ' — ' + error.message, 'bot');
+            showNotification(
+                'error',
+                'Error de Sistema',
+                'Hubo un problema técnico al enviar el mensaje:<br><strong>' + error.name + '</strong>: ' + error.message
+            );
         }
 
     }
