@@ -285,10 +285,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 botReply = '(n8n devolvió una respuesta vacía — verifica que el Agente AI esté conectado al Chat Trigger)';
             }
 
-            // Strip internal n8n tool call traces (e.g. "Calling search_knowledge with input: {...}")
-            botReply = botReply.replace(/Calling \w+ with input:\s*\{[\s\S]*?\}/g, '').trim();
+            // Helper: strip all "Calling <tool> with input: {...}" traces from n8n
+            function stripToolTraces(text) {
+                // Remove each "Calling <toolname> with input: { ... }" block.
+                // Uses [^{}]* to avoid issues with accented chars inside JSON values.
+                return text.replace(/Calling\s+[\w-]+\s+with\s+input:\s*\{[^{}]*\}/g, '').trim();
+            }
 
-            addMessage(botReply, 'bot');
+            addMessage(stripToolTraces(botReply), 'bot');
 
         } catch (error) {
             removeMessage(typingId);
