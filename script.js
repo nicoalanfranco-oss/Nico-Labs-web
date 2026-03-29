@@ -182,12 +182,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Inject Chatbot HTML
     chatbotContainer.innerHTML = `
+        <div class="chat-tooltip" id="chat-tooltip">
+            <div class="tooltip-content">
+                <span class="tooltip-greeting">¡Hola! 👋</span>
+                Soy <strong>Nicolich</strong>, tu asistente virtual. ¿En qué puedo ayudarte?
+            </div>
+        </div>
         <div class="chat-widget" id="chat-widget">
             <div class="chat-header">
                 <div class="chat-title">
                      <i class="fas fa-robot"></i> Nico Labs AI
                 </div>
-                <button class="chat-close" id="chat-close"><i class="fas fa-times"></i></button>
+                <div class="chat-header-actions">
+                    <button class="chat-action-btn" id="chat-clear" title="Limpiar conversación"><i class="fas fa-trash-alt"></i></button>
+                    <button class="chat-close" id="chat-close"><i class="fas fa-times"></i></button>
+                </div>
             </div>
             <div class="chat-messages" id="chat-messages">
                 <div class="message bot">
@@ -210,6 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chat-input');
     const chatSend = document.getElementById('chat-send');
     const chatMessages = document.getElementById('chat-messages');
+    const chatTooltip = document.getElementById('chat-tooltip');
 
     // Intro animation for the toggle
     chatToggle.style.opacity = '0';
@@ -221,16 +231,102 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 2000);
 
     // Generate or retrieve a unique session ID for this conversation
-    // sessionStorage resets when the tab is closed (new session = fresh memory)
-    if (!sessionStorage.getItem('nicolabs_session_id')) {
-        sessionStorage.setItem('nicolabs_session_id', 'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9));
+    // localStorage persists even when the tab/browser is closed (persistent memory)
+    if (!localStorage.getItem('nicolabs_session_id')) {
+        localStorage.setItem('nicolabs_session_id', 'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9));
     }
-    const SESSION_ID = sessionStorage.getItem('nicolabs_session_id');
+    let SESSION_ID = localStorage.getItem('nicolabs_session_id');
+    console.log('Chat Session ID:', SESSION_ID);
+
+    // Persistence: History Logic
+    function getHistory() {
+        return JSON.parse(localStorage.getItem('nicolabs_chat_history') || '[]');
+    }
+
+    function saveMessageToLocal(text, sender) {
+        const history = getHistory();
+        history.push({ text, sender, timestamp: Date.now() });
+        localStorage.setItem('nicolabs_chat_history', JSON.stringify(history));
+    }
+
+    function clearChatHistory() {
+        localStorage.removeItem('nicolabs_chat_history');
+        localStorage.removeItem('nicolabs_session_id');
+        // Regenerate session ID
+        localStorage.setItem('nicolabs_session_id', 'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9));
+        SESSION_ID = localStorage.getItem('nicolabs_session_id');
+        
+        // Clear UI
+        chatMessages.innerHTML = `
+            <div class="message bot">
+                Hola, soy el asistente virtual de Nico Labs. ¿En qué puedo ayudarte hoy?
+            </div>
+        `;
+        showNotification('success', 'Conversación Reiniciada', 'Se ha generado una nueva sesión de chat.');
+    }
+
+    function loadChatHistory() {
+        const history = getHistory();
+        if (history.length > 0) {
+            // Clear initial message if there's history
+            chatMessages.innerHTML = '';
+            history.forEach(msg => {
+                const div = document.createElement('div');
+                div.classList.add('message', msg.sender);
+                div.textContent = msg.text;
+                chatMessages.appendChild(div);
+            });
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    }
 
     let originalScrollY = 0;
 
+    // Tooltip Logic
+    let tooltipTimeout;
+    function showChatTooltip(text, duration = 8000) {
+        if (chatWidget.classList.contains('active')) return;
+        
+        if (text) {
+            chatTooltip.querySelector('.tooltip-content').innerHTML = text;
+        }
+        
+        chatTooltip.classList.add('active');
+        
+        clearTimeout(tooltipTimeout);
+        tooltipTimeout = setTimeout(() => {
+            hideChatTooltip();
+        }, duration);
+    }
+
+    function hideChatTooltip() {
+        chatTooltip.classList.remove('active');
+    }
+
+    // Initial greeting after page load
+    setTimeout(() => {
+        showChatTooltip();
+    }, 4500);
+
+    // Scroll Trigger: Show tooltip when reaching contact section
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Show a specific message for contact
+                    showChatTooltip('<span class="tooltip-greeting">¿Dudas sobre tu proyecto?</span>¡Estoy aquí para asesorarte en tiempo real! 🚀');
+                    // Stop observing once triggered to avoid being annoying
+                    observer.unobserve(contactSection);
+                }
+            });
+        }, { threshold: 0.3 });
+        observer.observe(contactSection);
+    }
+
     // Toggle Chat
     function toggleChat() {
+        hideChatTooltip();
         chatWidget.classList.toggle('active');
         if (chatWidget.classList.contains('active')) {
             if (window.innerWidth <= 768) {
@@ -295,6 +391,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     chatToggle.addEventListener('click', toggleChat);
     chatClose.addEventListener('click', toggleChat);
+    const chatClear = document.getElementById('chat-clear');
+    if (chatClear) chatClear.addEventListener('click', clearChatHistory);
+
+    // Initial Load
+    loadChatHistory();
 
     // Send Message Logic
     async function sendMessage() {
@@ -419,6 +520,10 @@ document.addEventListener('DOMContentLoaded', () => {
         div.textContent = text;
         chatMessages.appendChild(div);
         chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        // Save to local storage
+        saveMessageToLocal(text, sender);
+        
         return id;
     }
 
