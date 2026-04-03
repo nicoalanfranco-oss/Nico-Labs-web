@@ -1,5 +1,55 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // ── Translation Logic ──────────────────────────────────────────────
+    const langBtns = document.querySelectorAll('.lang-btn');
+    let currentLang = localStorage.getItem('nicolabs_lang') || 'es';
+
+    function setLanguage(lang) {
+        if (!translations[lang]) return;
+        currentLang = lang;
+        localStorage.setItem('nicolabs_lang', lang);
+        
+        // Update active class on buttons
+        langBtns.forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+        });
+
+        // Translate text content
+        document.querySelectorAll("[data-i18n]").forEach(el => {
+            const key = el.getAttribute("data-i18n");
+            if (translations[lang] && translations[lang][key]) {
+                el.innerHTML = translations[lang][key];
+            }
+        });
+
+        // Translate placeholders
+        document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+            const key = el.getAttribute("data-i18n-placeholder");
+            if (translations[lang] && translations[lang][key]) {
+                el.placeholder = translations[lang][key];
+            }
+        });
+        
+        // Update HTML lang attribute
+        document.documentElement.lang = lang;
+
+        // Update Chatbot if it exists
+        if (typeof updateChatbotStrings === 'function') {
+            updateChatbotStrings(lang);
+        }
+    }
+
+    langBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            setLanguage(btn.getAttribute('data-lang'));
+        });
+    });
+
+    // Initial translation call
+    setLanguage(currentLang);
+    // ── End Translation Logic ──────────────────────────────────────────
+
+
     // ── Notification Modal + Confetti ──────────────────────────────────
     const notifOverlay = document.getElementById('form-notification-overlay');
     const notifIcon = document.getElementById('notif-icon');
@@ -157,8 +207,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     contactForm.reset();
                     showNotification(
                         'success',
-                        '¡Solicitud Enviada!',
-                        'Tu mensaje llegó con éxito.<br>El equipo de <strong>Nico Labs</strong> va a contactarte muy pronto.'
+                        translations[currentLang]['notif-title'],
+                        translations[currentLang]['notif-desc']
                     );
                 } else {
                     throw new Error('Error en el envío (HTTP ' + response.status + ')');
@@ -175,6 +225,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.disabled = false;
             }
         });
+    }
+
+    function updateChatbotStrings(lang) {
+        const tooltipGreeting = document.querySelector('.tooltip-greeting');
+        const tooltipContent = document.querySelector('.tooltip-content');
+        const chatInput = document.getElementById('chat-input');
+        const chatTitle = document.querySelector('.chat-title');
+        const welcomeMsg = document.querySelector('.message.bot');
+
+        if (translations[lang]) {
+            if (tooltipGreeting) tooltipGreeting.innerText = translations[lang]['chat-greeting'];
+            if (tooltipContent) {
+                tooltipContent.innerHTML = `<span class="tooltip-greeting">${translations[lang]['chat-greeting']}</span> ${translations[lang]['chat-message']}`;
+            }
+            if (chatInput) chatInput.placeholder = translations[lang]['chat-input'];
+            if (chatTitle) chatTitle.innerHTML = `<i class="fas fa-robot"></i> ${translations[lang]['chat-title']}`;
+            // If the welcome message is still the default one, update it
+            if (welcomeMsg && (welcomeMsg.innerText.includes('Hola') || welcomeMsg.innerText.includes('Hello') || welcomeMsg.innerText.includes('Olá'))) {
+                welcomeMsg.innerText = translations[lang]['chat-welcome'];
+            }
+        }
     }
 
     // Chatbot Widget
@@ -213,6 +284,10 @@ document.addEventListener('DOMContentLoaded', () => {
         </button>
     `;
 
+    // Initialize chatbot strings after injection
+    updateChatbotStrings(currentLang);
+
+
     const chatToggle = document.getElementById('chat-toggle');
     const chatWidget = document.getElementById('chat-widget');
     const chatClose = document.getElementById('chat-close');
@@ -248,6 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
         history.push({ text, sender, timestamp: Date.now() });
         localStorage.setItem('nicolabs_chat_history', JSON.stringify(history));
     }
+
 
     function clearChatHistory() {
         localStorage.removeItem('nicolabs_chat_history');
@@ -616,3 +692,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+
+
