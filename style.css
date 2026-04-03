@@ -427,6 +427,13 @@ body {
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    animation: gradient-shimmer 3s linear infinite;
+}
+
+@keyframes gradient-shimmer {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .hero-subtitle {
@@ -2091,6 +2098,7 @@ button[type="submit"] {
     padding: 8px 16px;
     border-radius: 2rem;
     background: rgba(23, 52, 54, 0.4);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(0, 242, 255, 0.2);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);

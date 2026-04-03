@@ -14,7 +14,7 @@ const translations = {
         "form-email": "Email",
         
         // Hero
-        "hero-title": "Estrategia de <br> Negocios + <br> <span class='cyan-text'>Tecnología</span>",
+        "hero-title": "Estrategia de <br> Negocios + <br> <span class='gradient-text'>Tecnología</span>",
         "hero-subtitle": "No solo automatizamos procesos. Diseñamos el cerebro operativo de tu empresa.",
         "btn-view-work": "Ver Soluciones",
         
@@ -228,7 +228,7 @@ const translations = {
         "form-email": "Email",
         
         // Hero
-        "hero-title": "Business <br> Strategy + <br> <span class='cyan-text'>Technology</span>",
+        "hero-title": "Business <br> Strategy + <br> <span class='gradient-text'>Technology</span>",
         "hero-subtitle": "We don't just automate processes. We design the operational brain of your company.",
         "btn-view-work": "View Solutions",
         
@@ -437,7 +437,7 @@ const translations = {
         "form-email": "E-mail",
         
         // Hero
-        "hero-title": "Estratégia de <br> Negócios + <br> <span class='cyan-text'>Tecnologia</span>",
+        "hero-title": "Estratégia de <br> Negócios + <br> <span class='gradient-text'>Tecnologia</span>",
         "hero-subtitle": "Não apenas automatizamos processos. Projetamos o cérebro operacional da sua empresa.",
         "btn-view-work": "Ver Soluções",
         
