@@ -522,8 +522,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let botReply = '';
 
-            // Helper: deeply extract the text content from potentially nested JSON responses.
-            // n8n agent can return: [{"output": "{\"output\": \"...\"}" }] (double-nested)
+            if (!rawText) {
+                showNotification(
+                    'error',
+                    'Sin Respuesta',
+                    ' El agente no devolvió ninguna respuesta.<br>Verificá que el flujo en <strong>n8n</strong> esté correctamente configurado.'
+                );
+                return;
+            }
+
+            // 1. Check if it is NDJSON (streaming format from n8n)
+            let combinedText = '';
+            let isNdjson = false;
+            const lines = rawText.split('\n').filter(line => line.trim() !== '');
+            
+            for (const line of lines) {
+                try {
+                    const parsedLine = JSON.parse(line);
+                    if (parsedLine && parsedLine.type === 'item' && parsedLine.content !== undefined) {
+                        combinedText += parsedLine.content;
+                        isNdjson = true;
+                    }
+                } catch (e) {
+                    // Ignore lines that are not valid JSON
+                }
+            }
+
+            // The text we will try to unwrap
+            let textToProcess = (isNdjson && combinedText) ? combinedText : rawText;
+
+            // 2. Helper: deeply extract the text content from potentially nested JSON responses.
             function extractBotText(raw) {
                 let value = raw;
                 // Keep unwrapping as long as it looks like a JSON string
@@ -536,6 +564,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const candidate = Array.isArray(parsed)
                             ? (parsed[0]?.output ?? parsed[0]?.text ?? parsed[0]?.message)
                             : (parsed.output ?? parsed.text ?? parsed.message);
+                        
                         if (candidate === undefined || candidate === null) break;
                         value = candidate;
                     } catch (e) {
@@ -545,43 +574,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return String(value);
             }
 
-            if (rawText) {
-                try {
-                    botReply = extractBotText(rawText);
-                } catch (jsonErr) {
-                    // It failed standard JSON parse, it might be NDJSON (streaming format)
-                    // The AI Agent returns lines like: {"type":"item","content":"..."}
-                    const lines = rawText.split('\n').filter(line => line.trim() !== '');
-                    let combinedText = '';
-                    let isNdjson = false;
-
-                    for (const line of lines) {
-                        try {
-                            const parsedLine = JSON.parse(line);
-                            if (parsedLine.type === 'item' && parsedLine.content) {
-                                combinedText += parsedLine.content;
-                                isNdjson = true;
-                            }
-                        } catch (e) {
-                            // ignore lines that aren't valid JSON
-                        }
-                    }
-
-                    if (isNdjson && combinedText) {
-                        botReply = combinedText;
-                    } else {
-                        // Not JSON, not NDJSON, just plain text
-                        botReply = rawText;
-                    }
-                }
-            } else {
-                showNotification(
-                    'error',
-                    'Sin Respuesta',
-                    ' El agente no devolvió ninguna respuesta.<br>Verificá que el flujo en <strong>n8n</strong> esté correctamente configurado.'
-                );
-                return;
-            }
+            botReply = extractBotText(textToProcess);
 
             // Helper: strip all "Calling <tool> with input: {...}" traces from n8n
             function stripToolTraces(text) {
