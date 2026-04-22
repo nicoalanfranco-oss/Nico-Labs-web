@@ -495,7 +495,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     chatInput: text,
                     sessionId: SESSION_ID,
-                    cliente: 'NICOLABS',
+                    cliente: 'nicolabs',
                     fuente: 'WEB'
                 })
             });
