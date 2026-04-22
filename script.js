@@ -349,7 +349,11 @@ document.addEventListener('DOMContentLoaded', () => {
             history.forEach(msg => {
                 const div = document.createElement('div');
                 div.classList.add('message', msg.sender);
-                div.textContent = msg.text;
+                if (msg.sender === 'bot') {
+                    div.innerHTML = formatMarkdown(msg.text);
+                } else {
+                    div.textContent = msg.text;
+                }
                 chatMessages.appendChild(div);
             });
             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -518,15 +522,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let botReply = '';
 
+            // Helper: deeply extract the text content from potentially nested JSON responses.
+            // n8n agent can return: [{"output": "{\"output\": \"...\"}" }] (double-nested)
+            function extractBotText(raw) {
+                let value = raw;
+                // Keep unwrapping as long as it looks like a JSON string
+                for (let i = 0; i < 3; i++) {
+                    if (typeof value !== 'string') break;
+                    const trimmed = value.trim();
+                    if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) break;
+                    try {
+                        const parsed = JSON.parse(trimmed);
+                        const candidate = Array.isArray(parsed)
+                            ? (parsed[0]?.output ?? parsed[0]?.text ?? parsed[0]?.message)
+                            : (parsed.output ?? parsed.text ?? parsed.message);
+                        if (candidate === undefined || candidate === null) break;
+                        value = candidate;
+                    } catch (e) {
+                        break;
+                    }
+                }
+                return String(value);
+            }
+
             if (rawText) {
                 try {
-                    // Try parsing as standard JSON first
-                    const parsed = JSON.parse(rawText);
-                    if (Array.isArray(parsed)) {
-                        botReply = parsed[0]?.output || parsed[0]?.text || parsed[0]?.message || rawText;
-                    } else {
-                        botReply = parsed.output || parsed.text || parsed.message || rawText;
-                    }
+                    botReply = extractBotText(rawText);
                 } catch (jsonErr) {
                     // It failed standard JSON parse, it might be NDJSON (streaming format)
                     // The AI Agent returns lines like: {"type":"item","content":"..."}
@@ -564,8 +585,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Helper: strip all "Calling <tool> with input: {...}" traces from n8n
             function stripToolTraces(text) {
-                // Remove each "Calling <toolname> with input: { ... }" block.
-                // Uses [^{}]* to avoid issues with accented chars inside JSON values.
                 return text.replace(/Calling\s+[\w-]+\s+with\s+input:\s*\{[^{}]*\}/g, '').trim();
             }
 
@@ -588,12 +607,41 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Enter') sendMessage();
     });
 
+    // Convert a subset of Markdown to safe HTML for bot messages.
+    function formatMarkdown(text) {
+        // Escape raw HTML to prevent injection
+        let html = text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+
+        // Bold: **text** → <strong>text</strong>
+        html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+        // Italic: *text* → <em>text</em>
+        html = html.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
+
+        // Wrap double-newline separated blocks in <p> tags
+        const paragraphs = html.split(/\n{2,}/);
+        html = paragraphs
+            .map(p => p.trim())
+            .filter(p => p.length > 0)
+            .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`)
+            .join('');
+
+        return html;
+    }
+
     function addMessage(text, sender) {
         const div = document.createElement('div');
         const id = 'msg-' + Date.now();
         div.id = id;
         div.classList.add('message', sender);
-        div.textContent = text;
+        if (sender === 'bot') {
+            div.innerHTML = formatMarkdown(text);
+        } else {
+            div.textContent = text;
+        }
         chatMessages.appendChild(div);
         chatMessages.scrollTop = chatMessages.scrollHeight;
         

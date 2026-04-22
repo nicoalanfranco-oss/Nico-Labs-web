@@ -1395,6 +1395,26 @@ button[type="submit"] {
     border-bottom-left-radius: 4px;
 }
 
+/* Markdown-rendered content inside bot messages */
+.message.bot p {
+    margin: 0 0 0.6em 0;
+    line-height: 1.6;
+}
+
+.message.bot p:last-child {
+    margin-bottom: 0;
+}
+
+.message.bot strong {
+    color: #fff;
+    font-weight: 700;
+}
+
+.message.bot em {
+    color: rgba(255, 255, 255, 0.85);
+    font-style: italic;
+}
+
 .message.user {
     background: rgba(0, 242, 255, 0.15);
     border: 1px solid rgba(0, 242, 255, 0.2);
