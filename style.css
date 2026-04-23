@@ -107,9 +107,7 @@ body {
 }
 
 .navbar-brand {
-    position: absolute;
-    left: 35%;
-    transform: translateX(-50%);
+    margin-left: 12px;
     pointer-events: none;
 }
 
