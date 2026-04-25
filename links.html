@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Nico Labs - Enlaces de interés. Automatización con n8n, Inteligencia Artificial & Ingeniería de Procesos." />
+    <meta name="author" content="Nico Labs" />
+    
+    <!-- Favicon icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="Nicolabs 192.png" />
+    <link rel="apple-touch-icon" href="Nicolabs 192.png" />
+    
+    <title>Nico Labs - Enlaces</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=2.9">
+</head>
+
+<body class="font-display links-page">
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <div class="links-container">
+        <!-- Header -->
+        <div class="profile-header">
+            <img src="logo-main.png" alt="Nico Labs" class="profile-image">
+            <div class="links-header">
+                <p class="links-description">Agencia de Automatización con IA. Optimizamos tu tiempo y potenciamos tu rentabilidad. <br><span class="highlight">Ingeniería de Procesos de Alto Nivel.</span></p>
+            </div>
+        </div>
+
+        <!-- Links -->
+        <a href="index.html" class="link-card link-card-primary">
+            <span><i class="fas fa-globe"></i>Sitio Web Oficial</span>
+        </a>
+        
+        <a href="https://wa.me/59899075509" class="link-card">
+            <span><i class="fab fa-whatsapp"></i>Contactar por WhatsApp</span>
+        </a>
+        
+        <a href="https://www.instagram.com/nicolabsautomatizaciones/" class="link-card" target="_blank">
+            <span><i class="fab fa-instagram"></i>Sígueme en Instagram</span>
+        </a>
+        
+        <a href="https://www.facebook.com/profile.php?id=61578642059498&locale=es_LA" class="link-card" target="_blank">
+            <span><i class="fab fa-facebook"></i>Sígueme en Facebook</span>
+        </a>
+
+        <!-- Social Icons -->
+        <div class="social-icons">
+            <a href="https://www.instagram.com/nicolabsautomatizaciones/" class="social-icon" target="_blank">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61578642059498&locale=es_LA" class="social-icon" target="_blank">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://www.linkedin.com/company/nico-labs-automatizaciones-con-inteligencia-artificial/" class="social-icon" target="_blank">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+        </div>
+
+        <!-- Logo Footer -->
+        <div class="text-center logo-footer">
+            <img src="logo-main.png" alt="Nico Labs" class="mx-auto object-contain">
+        </div>
+    </div>
+
+    <!-- Chatbot Container -->
+    <div id="chatbot-container">
+        <!-- Chatbot injected by script.js -->
+    </div>
+
+    <!-- Notifications Overlay -->
+    <div id="form-notification-overlay" class="form-notification-overlay">
+        <canvas id="confetti-canvas"></canvas>
+        <div class="form-notification-card glass-card" id="form-notification-card">
+            <div class="notif-icon" id="notif-icon">🚀</div>
+            <h2 class="notif-title gradient-text" id="notif-title" data-i18n="notif-title">¡Solicitud Enviada!</h2>
+            <p class="notif-subtitle" id="notif-subtitle" data-i18n="notif-desc">
+                Tu mensaje llegó con éxito.<br>El equipo de <strong>Nico Labs</strong> va a contactarte muy pronto.
+            </p>
+            <button id="notif-close-btn" class="btn-primary" data-i18n="notif-btn">Perfecto, gracias</button>
+        </div>
+    </div>
+
+    <script src="translations.js"></script>
+    <script src="script.js?v=2.10"></script>
+    <script>
+        // Custom logic for links page animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.link-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 400 + (index * 100));
+            });
+        });
+    </script>
+</body>
+
+</html>
