@@ -703,9 +703,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupModal('project-redes', 'redes-modal');
     setupModal('project-chatbot', 'chatbot-modal');
     setupModal('project-web', 'web-modal');
-    setupModal('open-privacy', 'privacy-modal');
-    setupModal('nav-privacy', 'privacy-modal');
-    setupModal('footer-privacy', 'privacy-modal');
 
     // Scroll Reveal Animations
     const revealElements = document.querySelectorAll('.reveal-left, .reveal-bottom, .reveal-right');

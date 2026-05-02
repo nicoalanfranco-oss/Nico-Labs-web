@@ -35,7 +35,7 @@
                 <li><a href="#hero" data-i18n="nav-solutions">Soluciones</a></li>
                 <li><a href="#about" data-i18n="nav-about">Nosotros</a></li>
                 <li><a href="#services" data-i18n="nav-services">Servicios</a></li>
-                <li><a href="#" id="nav-privacy" data-i18n="footer-privacy">Privacidad</a></li>
+                <li><a href="privacy.html" data-i18n="footer-privacy">Privacidad</a></li>
 
                 <li><a href="#contact" class="btn-primary" data-i18n="btn-contact">Contacto</a></li>
                 <li><a href="links.html" class="btn-secondary" data-i18n="nav-links">Links</a></li>
@@ -445,7 +445,7 @@
                 <p data-i18n="footer-rights">&copy; 2024 Nico Labs. Todos los derechos reservados.</p>
             </div>
             <div class="footer-links">
-                <a href="#" id="footer-privacy" data-i18n="footer-privacy">Políticas de Privacidad</a>
+                <a href="privacy.html" data-i18n="footer-privacy">Políticas de Privacidad</a>
                 <a href="#contact" data-i18n="nav-contact-short">Contacto</a>
                 <a href="links.html" data-i18n="nav-links">Links</a>
             </div>
@@ -768,116 +768,6 @@
         </div>
     </div>
 
-    <div id="privacy-modal" class="modal">
-        <div class="modal-overlay"></div>
-        <div class="modal-container glass-card">
-            <button class="modal-close"><i class="fas fa-times"></i></button>
-            <div class="modal-background" style="background: linear-gradient(135deg, #050b0c 0%, #173436 100%);"></div>
-            <div class="modal-content">
-                <h2 class="modal-title metallic-text" data-i18n="privacy-title">Políticas de Privacidad</h2>
-                <div class="modal-scroll-area">
-                    <div class="modal-section">
-                        <h3 data-i18n="privacy-sec1-title">1. Introducción</h3>
-                        <p data-i18n="privacy-sec1-desc">En Nico Labs valoramos la confianza de nuestros clientes y usuarios. Este documento establece
-                            cómo recopilamos, utilizamos, almacenamos y protegemos la información personal y comercial
-                            en el marco de nuestros servicios de automatización y gestión de flujos de trabajo.</p>
-                    </div>
-
-                    <div class="modal-section">
-                        <h3 data-i18n="privacy-sec2-title">2. Alcance</h3>
-                        <p data-i18n="privacy-sec2-desc">Aplica a todos los datos que procesamos en nombre de nuestros clientes, incluyendo:</p>
-                        <ul>
-                            <li data-i18n="privacy-sec2-li1">Información de cuentas de redes sociales (ej. Instagram Business).</li>
-                            <li data-i18n="privacy-sec2-li2">Datos de contacto y comunicación (mensajes, correos, formularios).</li>
-                            <li data-i18n="privacy-sec2-li3">Documentos y registros contables vinculados a los servicios contratados.</li>
-                        </ul>
-                    </div>
-
-                    <div class="modal-section">
-                        <h3 data-i18n="privacy-sec3-title">3. Principios</h3>
-                        <ul>
-                            <li data-i18n="privacy-sec3-li1"><strong>Transparencia:</strong> informamos claramente qué datos se recopilan y con qué
-                                fin.</li>
-                            <li data-i18n="privacy-sec3-li2"><strong>Minimización:</strong> solo procesamos los datos estrictamente necesarios.</li>
-                            <li data-i18n="privacy-sec3-li3"><strong>Seguridad:</strong> aplicamos medidas técnicas y organizativas para proteger la
-                                información.</li>
-                            <li data-i18n="privacy-sec3-li4"><strong>Confidencialidad:</strong> nunca compartimos datos con terceros sin autorización
-                                expresa.</li>
-                        </ul>
-                    </div>
-
-                    <div class="modal-section">
-                        <h3 data-i18n="privacy-sec4-title">4. Finalidad del tratamiento</h3>
-                        <p data-i18n="privacy-sec4-desc">Los datos se utilizan exclusivamente para:</p>
-                        <ul>
-                            <li data-i18n="privacy-sec4-li1">Ejecutar flujos de automatización solicitados por el cliente.</li>
-                            <li data-i18n="privacy-sec4-li2">Integrar APIs de terceros (ej. Meta, Google) de forma segura.</li>
-                            <li data-i18n="privacy-sec4-li3">Proveer soporte técnico y auditoría de procesos.</li>
-                        </ul>
-                    </div>
-
-                    <div class="modal-section">
-                        <h3 data-i18n="privacy-sec5-title">5. Conservación</h3>
-                        <ul>
-                            <li data-i18n="privacy-sec5-li1">Los datos se almacenan únicamente durante el tiempo necesario para cumplir la finalidad.
-                            </li>
-                            <li data-i18n="privacy-sec5-li2">Implementamos políticas de borrado seguro y anonimización cuando corresponde.</li>
-                        </ul>
-                    </div>
-
-                    <div class="modal-section">
-                        <h3 data-i18n="privacy-sec6-title">6. Derechos de los clientes</h3>
-                        <p data-i18n="privacy-sec6-desc">Los clientes pueden solicitar en cualquier momento:</p>
-                        <ul>
-                            <li data-i18n="privacy-sec6-li1">Acceso a sus datos.</li>
-                            <li data-i18n="privacy-sec6-li2">Rectificación de información incorrecta.</li>
-                            <li data-i18n="privacy-sec6-li3">Eliminación de datos cuando ya no sean necesarios.</li>
-                            <li data-i18n="privacy-sec6-li4">Limitación u oposición al tratamiento.</li>
-                        </ul>
-                    </div>
-
-                    <div class="modal-section">
-                        <h3 data-i18n="privacy-sec7-title">7. Seguridad</h3>
-                        <ul>
-                            <li data-i18n="privacy-sec7-li1">Uso de cifrado en tránsito y en reposo.</li>
-                            <li data-i18n="privacy-sec7-li2">Control de accesos con autenticación fuerte.</li>
-                            <li data-i18n="privacy-sec7-li3">Auditorías periódicas de los sistemas.</li>
-                            <li data-i18n="privacy-sec7-li4">Registro de incidentes y plan de respuesta.</li>
-                        </ul>
-                    </div>
-
-                    <div class="modal-section">
-                        <h3 data-i18n="privacy-sec8-title">8. Propiedad de los datos</h3>
-                        <p data-i18n="privacy-sec8-desc">Todos los datos procesados por Nico Labs son y seguirán siendo propiedad exclusiva del
-                            cliente. Nuestra empresa actúa únicamente como encargado del tratamiento, sin adquirir
-                            derechos sobre la información. En caso de rescisión del contrato, nos comprometemos a
-                            devolver al cliente la totalidad de los datos en un formato estructurado, accesible y
-                            amigable (ej. CSV, JSON o informes PDF), asegurando que pueda reutilizarlos sin dependencia
-                            tecnológica. Asimismo, eliminaremos cualquier copia residual de nuestros sistemas, salvo
-                            aquellas que debamos conservar por obligaciones legales.</p>
-                    </div>
-
-                    <div class="modal-section">
-                        <h3 data-i18n="privacy-sec9-title">9. Transferencias internacionales</h3>
-                        <p data-i18n="privacy-sec9-desc">En caso de que los datos se procesen fuera de Uruguay, Nico Labs garantiza que se aplicarán
-                            mecanismos de protección equivalentes a los exigidos por la normativa uruguaya, incluyendo
-                            el uso de cláusulas contractuales tipo aprobadas internacionalmente, acuerdos de
-                            confidencialidad y controles de seguridad que aseguren la integridad y privacidad de la
-                            información. No se realizarán transferencias internacionales sin informar previamente al
-                            cliente y obtener su consentimiento cuando corresponda.</p>
-                    </div>
-
-                    <div class="modal-section">
-                        <h3 data-i18n="privacy-sec10-title">10. Contacto</h3>
-                        <p data-i18n="privacy-sec10-desc">Para consultas o ejercicio de derechos, los clientes pueden comunicarse con:</p>
-                        <p data-i18n="privacy-sec10-info"><strong>Nico Labs – Departamento de Privacidad</strong><br>
-                            Correo: nico.a.lanfranco@gmail.com<br>
-                            Teléfono: +598 99 075 09</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div id="chatbot-container">
         <!-- Chatbot will be injected here -->
