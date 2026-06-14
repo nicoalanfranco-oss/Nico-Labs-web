@@ -313,6 +313,108 @@ document.addEventListener('DOMContentLoaded', () => {
     let SESSION_ID = localStorage.getItem('nicolabs_session_id');
     console.log('Chat Session ID:', SESSION_ID);
 
+    async function sendToChatwoot(content, messageType) {
+        const config = window.NICOLABS_CONFIG || {};
+        const CHATWOOT_BASE = config.CHATWOOT_BASE || 'https://chatwoot.nico-family.com/api/v1/accounts/2';
+        const CHATWOOT_TOKEN = config.CHATWOOT_TOKEN || 'Zu1jwAB9vMsvmEXfch8NskP6';
+        const INBOX_ID = config.CHATWOOT_INBOX_ID || 15;
+
+        try {
+            // ── PASO 1: Obtener o crear contacto ─────────────────────────────
+            let contactId = sessionStorage.getItem('nicolabs_chatwoot_contact_id');
+
+            if (!contactId) {
+                // Buscar contacto existente por identifier (SESSION_ID)
+                const searchRes = await fetch(
+                    `${CHATWOOT_BASE}/contacts/search?q=${encodeURIComponent(SESSION_ID)}&page=1&include_contacts=true`,
+                    { headers: { 'api_access_token': CHATWOOT_TOKEN } }
+                );
+                if (searchRes.ok) {
+                    const searchData = await searchRes.json();
+                    const contacts = Array.isArray(searchData.payload)
+                        ? searchData.payload
+                        : (searchData.payload && Array.isArray(searchData.payload.contacts))
+                            ? searchData.payload.contacts
+                            : [];
+                    const existing = contacts.find(c => c.identifier === SESSION_ID);
+                    if (existing) contactId = existing.id;
+                }
+
+                // Si no existe, crear contacto nuevo
+                if (!contactId) {
+                    const createRes = await fetch(`${CHATWOOT_BASE}/contacts`, {
+                        method: 'POST',
+                        headers: { 'api_access_token': CHATWOOT_TOKEN, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: 'Visitante Web',
+                            identifier: SESSION_ID
+                        })
+                    });
+                    if (createRes.ok) {
+                        const createData = await createRes.json();
+                        contactId = (createData.payload && createData.payload.contact)
+                            ? createData.payload.contact.id
+                            : createData.id;
+                    }
+                }
+
+                if (contactId) sessionStorage.setItem('nicolabs_chatwoot_contact_id', contactId);
+            }
+
+            if (!contactId) throw new Error('[Chatwoot] No se pudo obtener/crear contacto');
+
+            // ── PASO 2: Obtener o crear conversación en inbox 15 ─────────────
+            let conversationId = sessionStorage.getItem('nicolabs_chatwoot_conversation_id');
+
+            if (!conversationId) {
+                // Buscar conversación existente en inbox 15 (no resuelta)
+                const convsRes = await fetch(`${CHATWOOT_BASE}/contacts/${contactId}/conversations`, {
+                    headers: { 'api_access_token': CHATWOOT_TOKEN }
+                });
+                if (convsRes.ok) {
+                    const convsData = await convsRes.json();
+                    const convs = convsData.payload;
+                    if (Array.isArray(convs)) {
+                        const webConv = convs.find(c => c.inbox_id === INBOX_ID && c.status !== 'resolved');
+                        if (webConv) conversationId = webConv.id;
+                    }
+                }
+
+                // Si no existe, crear conversación nueva
+                if (!conversationId) {
+                    const newConvRes = await fetch(`${CHATWOOT_BASE}/conversations`, {
+                        method: 'POST',
+                        headers: { 'api_access_token': CHATWOOT_TOKEN, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ inbox_id: INBOX_ID, contact_id: contactId })
+                    });
+                    if (newConvRes.ok) {
+                        const newConvData = await newConvRes.json();
+                        conversationId = newConvData.id;
+                    }
+                }
+
+                if (conversationId) sessionStorage.setItem('nicolabs_chatwoot_conversation_id', conversationId);
+            }
+
+            if (!conversationId) throw new Error('[Chatwoot] No se pudo obtener/crear conversación');
+
+            // ── PASO 3: Enviar mensaje ────────────────────────────────────────
+            const msgRes = await fetch(`${CHATWOOT_BASE}/conversations/${conversationId}/messages`, {
+                method: 'POST',
+                headers: { 'api_access_token': CHATWOOT_TOKEN, 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    content: content,
+                    message_type: messageType === 'incoming' ? 0 : 1,
+                    private: false
+                })
+            });
+            if (!msgRes.ok) throw new Error('[Chatwoot] Error enviando mensaje: ' + msgRes.status);
+
+        } catch (error) {
+            console.error('Error in sendToChatwoot:', error);
+        }
+    }
+
     // Persistence: History Logic
     function getHistory() {
         return JSON.parse(localStorage.getItem('nicolabs_chat_history') || '[]');
@@ -328,6 +430,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function clearChatHistory() {
         localStorage.removeItem('nicolabs_chat_history');
         localStorage.removeItem('nicolabs_session_id');
+        sessionStorage.removeItem('nicolabs_chatwoot_contact_id');
+        sessionStorage.removeItem('nicolabs_chatwoot_conversation_id');
         // Regenerate session ID
         localStorage.setItem('nicolabs_session_id', 'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9));
         SESSION_ID = localStorage.getItem('nicolabs_session_id');
@@ -484,13 +588,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Add User Message
         addMessage(text, 'user');
+        sendToChatwoot(text, 'incoming');
         chatInput.value = '';
 
         // Show typing indicator
         const typingId = addTypingIndicator();
 
         try {
-            const response = await fetch('https://n8n.nico-family.com/webhook/f535820b-22eb-438f-930f-d0f8fe2f3a12/chat', {
+            const config = window.NICOLABS_CONFIG || {};
+            const webhookUrl = config.N8N_WEBHOOK_URL || 'https://n8n.nico-family.com/webhook/f535820b-22eb-438f-930f-d0f8fe2f3a12/chat';
+            const response = await fetch(webhookUrl, {
                 method: 'POST',
                 mode: 'cors',
                 headers: {
@@ -581,7 +688,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return text.replace(/Calling\s+[\w-]+\s+with\s+input:\s*\{[^{}]*\}/g, '').trim();
             }
 
-            addMessage(stripToolTraces(botReply), 'bot');
+            const cleanedReply = stripToolTraces(botReply);
+            addMessage(cleanedReply, 'bot');
+            sendToChatwoot(cleanedReply, 'outgoing');
 
         } catch (error) {
             removeMessage(typingId);

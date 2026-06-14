@@ -17,6 +17,22 @@
     <link rel="stylesheet" href="style.css?v=2.8">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="translations.js"></script>
+    <!-- Chatwoot SDK -->
+    <script>
+      (function(d,t) {
+        var BASE_URL="https://chatwoot.nico-family.com";
+        var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+        g.src=BASE_URL+"/packs/js/sdk.js";
+        g.async = true;
+        s.parentNode.insertBefore(g,s);
+        g.onload=function(){
+          window.chatwootSDK.run({
+            websiteToken: 'FqWFp82TCEcj7FfMxzT7xmYm',
+            baseUrl: BASE_URL
+          })
+        }
+      })(document,"script");
+    </script>
 </head>
 
 <body>
@@ -793,6 +809,7 @@
     </div>
 
     <script src="translations.js"></script>
+    <script src="config.js"></script>
     <script src="script.js?v=2.10"></script>
 </body>
 

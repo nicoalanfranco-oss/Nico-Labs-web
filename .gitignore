@@ -1,0 +1,10 @@
+# Secretos y configuración local - NUNCA commitear
+config.js
+.env
+.env.local
+.env*.local
+
+# Archivos de sistema y logs
+.DS_Store
+Thumbs.db
+*.log
