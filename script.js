@@ -508,7 +508,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     const history = getHistory();
                     let updated = false;
 
-                    messages.forEach(msg => {
+                    // Sort messages chronologically to make sure we parse them in order
+                    const sortedMessages = messages.sort((a, b) => a.created_at - b.created_at);
+
+                    sortedMessages.forEach(msg => {
                         // Only care about messages from agents/bot (message_type === 1 or message_type === 'outgoing')
                         const isBot = msg.message_type === 1 || msg.message_type === 'outgoing';
                         if (isBot) {
@@ -523,6 +526,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                         }
                     });
+
+                    // Stop polling once we successfully receive at least one new response from the bot
+                    if (updated) {
+                        stopPolling();
+                    }
                 }
             }
         } catch (err) {
@@ -533,7 +541,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function startPolling() {
         if (pollingIntervalId) return;
         fetchMessagesFromChatwoot();
-        pollingIntervalId = setInterval(fetchMessagesFromChatwoot, 5000);
+        pollingIntervalId = setInterval(fetchMessagesFromChatwoot, 4000);
     }
 
     function stopPolling() {
@@ -548,7 +556,6 @@ document.addEventListener('DOMContentLoaded', () => {
         hideChatTooltip();
         chatWidget.classList.toggle('active');
         if (chatWidget.classList.contains('active')) {
-            startPolling();
             if (window.innerWidth <= 768) {
                 // Lock the body layout viewport completely to prevent OS keyboard scrolling push
                 originalScrollY = window.scrollY;
@@ -617,7 +624,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial Load
     loadChatHistory();
-    startPolling();
 
     // Send Message Logic
     async function sendMessage() {
@@ -631,8 +637,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Show typing indicator
         addTypingIndicator();
 
-        // Enviar solo el mensaje del cliente a Chatwoot
+        // Enviar solo el mensaje del cliente a Chatwoot y empezar a escuchar la respuesta
         sendToChatwoot(text, 'incoming');
+        startPolling();
     }
 
     chatSend.addEventListener('click', sendMessage);

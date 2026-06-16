@@ -140,7 +140,7 @@ body {
 
 .nav-links {
     display: flex;
-    gap: 30px;
+    gap: 15px;
     list-style: none;
     align-items: center;
 }
@@ -224,7 +224,7 @@ body {
    BUTTONS — LIQUID FILL EFFECT
    ============================================ */
 .btn-primary {
-    padding: 14px 32px;
+    padding: 10px 20px;
     background: rgba(0, 242, 255, 0.1);
     border: 1px solid rgba(0, 242, 255, 0.3);
     border-radius: 9999px;
@@ -239,6 +239,9 @@ body {
     position: relative;
     overflow: hidden;
     z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-primary::after {
@@ -266,7 +269,7 @@ body {
 }
 
 .btn-secondary {
-    padding: 14px 32px;
+    padding: 10px 15px;
     background: transparent;
     border: none;
     border-radius: 9999px;
@@ -278,6 +281,9 @@ body {
     text-transform: uppercase;
     transition: all 0.3s;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-secondary:hover {
