@@ -11,11 +11,7 @@
     <meta name="author" content="Nico Labs">
     <link rel="canonical" href="https://nicolabs.nico-family.com/">
     
-    <!-- Hreflang (3 idiomas que ya tenés en la UI) -->
-    <link rel="alternate" hreflang="es" href="https://nicolabs.nico-family.com/">
-    <link rel="alternate" hreflang="en" href="https://nicolabs.nico-family.com/?lang=en">
-    <link rel="alternate" hreflang="pt" href="https://nicolabs.nico-family.com/?lang=pt">
-    <link rel="alternate" hreflang="x-default" href="https://nicolabs.nico-family.com/">
+    <!-- Hreflang tags removed to prevent non-canonical indexing issues (SPA handled client-side) -->
     
     <!-- Open Graph -->
     <meta property="og:type" content="website">
@@ -124,6 +120,13 @@
       "@type": "ProfessionalService",
       "name": "Nico Labs",
       "url": "https://nicolabs.nico-family.com/",
+      "image": "https://nicolabs.nico-family.com/profile-photo-new.png",
+      "telephone": "+598 99 075 509",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Montevideo",
+        "addressCountry": "UY"
+      },
       "priceRange": "$3.000 - $10.000 UYU/mes",
       "priceSpecification": {
         "@type": "UnitPriceSpecification",
@@ -214,10 +217,12 @@
     <header>
         <nav class="navbar glass-card">
             <div class="logo-container">
-                <img src="logo-main.png" alt="Nico Labs" class="main-logo">
-                <div class="navbar-brand">
-                    <span class="brand-text gradient-text">Nico Labs</span>
-                </div>
+                <a href="https://nicolabs.nico-family.com/" style="display: flex; align-items: center; text-decoration: none;">
+                    <img src="logo-main.png" alt="Nico Labs" class="main-logo">
+                    <div class="navbar-brand">
+                        <span class="brand-text gradient-text">Nico Labs</span>
+                    </div>
+                </a>
             </div>
             <ul class="nav-links">
                 <li><a href="#hero" data-i18n="nav-solutions">Soluciones</a></li>
