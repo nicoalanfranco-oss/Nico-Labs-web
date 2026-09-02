@@ -776,6 +776,72 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 100);
     }
 
+    // ── Marquee Spotlight Engine ────────────────────────────────────────────
+    (function initMarqueeSpotlight() {
+        const container = document.querySelector('.marquee-container');
+        const track     = document.querySelector('.marquee-track');
+        const items     = Array.from(document.querySelectorAll('.client-logo-item'));
+
+        if (!container || !track || !items.length) return;
+
+        let hoveredItem  = null;
+        let rafId        = null;
+
+        // ── Hover: pause animation & spotlight the hovered item ──
+        items.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                hoveredItem = item;
+                track.style.animationPlayState = 'paused';
+
+                // Clear auto-spotlight classes, apply hover class
+                items.forEach(i => i.classList.remove('spotlight-active', 'spotlight-near', 'spotlight-hovered'));
+                item.classList.add('spotlight-hovered');
+            });
+
+            item.addEventListener('mouseleave', () => {
+                hoveredItem = null;
+                item.classList.remove('spotlight-hovered');
+                track.style.animationPlayState = 'running';
+            });
+        });
+
+        // ── Auto-spotlight: detect center & skip-one positions ──
+        function tick() {
+            // Don't run auto-spotlight while user is hovering
+            if (!hoveredItem) {
+                const containerRect = container.getBoundingClientRect();
+                const centerX = containerRect.left + containerRect.width / 2;
+
+                // Build list of visible items + their distance to center
+                const visible = [];
+                items.forEach(item => {
+                    const r = item.getBoundingClientRect();
+                    // Skip items fully outside the container viewport
+                    if (r.right < containerRect.left || r.left > containerRect.right) return;
+                    const itemCenterX = r.left + r.width / 2;
+                    visible.push({ item, dist: Math.abs(itemCenterX - centerX) });
+                });
+
+                // Sort by distance ascending
+                visible.sort((a, b) => a.dist - b.dist);
+
+                // Remove all state classes first
+                items.forEach(i => i.classList.remove('spotlight-active', 'spotlight-near'));
+
+                // index 0 → active (center)
+                if (visible[0]) visible[0].item.classList.add('spotlight-active');
+                // index 1 → skipped (adjacent)
+                // index 2 → near (skip-one: color glow, no zoom)
+                if (visible[2]) visible[2].item.classList.add('spotlight-near');
+            }
+
+            rafId = requestAnimationFrame(tick);
+        }
+
+        rafId = requestAnimationFrame(tick);
+    })();
+    // ── End Marquee Spotlight Engine ────────────────────────────────────────
+
 });
 
 
