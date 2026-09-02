@@ -805,34 +805,39 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // ── Auto-spotlight: detect center & skip-one positions ──
+        // ── Auto-spotlight: Fixed Stage Lighting Zones ──
         function tick() {
-            // Don't run auto-spotlight while user is hovering
             if (!hoveredItem) {
                 const containerRect = container.getBoundingClientRect();
-                const centerX = containerRect.left + containerRect.width / 2;
+                const cWidth = containerRect.width;
 
-                // Build list of visible items + their distance to center
-                const visible = [];
                 items.forEach(item => {
                     const r = item.getBoundingClientRect();
-                    // Skip items fully outside the container viewport
-                    if (r.right < containerRect.left || r.left > containerRect.right) return;
-                    const itemCenterX = r.left + r.width / 2;
-                    visible.push({ item, dist: Math.abs(itemCenterX - centerX) });
+                    // Skip if out of viewport
+                    if (r.right < containerRect.left || r.left > containerRect.right) {
+                        item.classList.remove('spotlight-active', 'spotlight-near');
+                        return;
+                    }
+
+                    // Calculate center of item as ratio 0.0 -> 1.0 within container
+                    const itemCenterX = (r.left + r.width / 2) - containerRect.left;
+                    const ratio = itemCenterX / cWidth;
+
+                    item.classList.remove('spotlight-active', 'spotlight-near');
+
+                    // 1) CENTER STAGE ZONE (42% - 58%): Prominent Zoom 1.38x + Cyan Ring + Color
+                    if (ratio >= 0.42 && ratio <= 0.58) {
+                        item.classList.add('spotlight-active');
+                    }
+                    // 2) LEFT STAGE LIGHT (20% - 31%): Luminous Color Reveal, NO Zoom
+                    else if (ratio >= 0.20 && ratio <= 0.31) {
+                        item.classList.add('spotlight-near');
+                    }
+                    // 3) RIGHT STAGE LIGHT (69% - 80%): Luminous Color Reveal, NO Zoom
+                    else if (ratio >= 0.69 && ratio <= 0.80) {
+                        item.classList.add('spotlight-near');
+                    }
                 });
-
-                // Sort by distance ascending
-                visible.sort((a, b) => a.dist - b.dist);
-
-                // Remove all state classes first
-                items.forEach(i => i.classList.remove('spotlight-active', 'spotlight-near'));
-
-                // index 0 → active (center)
-                if (visible[0]) visible[0].item.classList.add('spotlight-active');
-                // index 1 → skipped (adjacent)
-                // index 2 → near (skip-one: color glow, no zoom)
-                if (visible[2]) visible[2].item.classList.add('spotlight-near');
             }
 
             rafId = requestAnimationFrame(tick);
