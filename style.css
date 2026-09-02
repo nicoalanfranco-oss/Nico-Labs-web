@@ -513,6 +513,99 @@ section {
 }
 
 /* ============================================
+   CLIENTS MARQUEE SECTION
+   ============================================ */
+.clients-section {
+    padding: 50px 0;
+    max-width: 100%;
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(180deg, rgba(5, 11, 12, 0.95) 0%, rgba(10, 24, 26, 0.4) 50%, rgba(5, 11, 12, 0.95) 100%);
+    border-top: 1px solid rgba(0, 242, 255, 0.08);
+    border-bottom: 1px solid rgba(0, 242, 255, 0.08);
+}
+
+.clients-tagline {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    opacity: 0.8;
+}
+
+.marquee-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+}
+
+.marquee-track {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    width: max-content;
+    animation: marquee-scroll 35s linear infinite;
+    will-change: transform;
+}
+
+.marquee-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+    100% {
+        transform: translate3d(calc(-100% / 3), 0, 0);
+    }
+}
+
+.client-logo-item {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 70px;
+    padding: 10px 25px;
+    background: rgba(23, 52, 54, 0.25);
+    border: 1px solid rgba(0, 242, 255, 0.08);
+    border-radius: 16px;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    cursor: pointer;
+}
+
+.client-logo-item:hover {
+    background: rgba(23, 52, 54, 0.55);
+    border-color: rgba(0, 242, 255, 0.4);
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+    transform: translateY(-3px) scale(1.03);
+}
+
+.client-logo {
+    max-height: 42px;
+    max-width: 140px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(0.85) opacity(0.7);
+    transition: all 0.4s ease;
+    border-radius: 4px;
+}
+
+.client-logo-item:hover .client-logo {
+    filter: brightness(1) invert(0) opacity(1) drop-shadow(0 0 6px rgba(0, 242, 255, 0.4));
+}
+
+/* ============================================
    SOLUTIONS SECTION
    ============================================ */
 .solutions-intro {
@@ -1644,10 +1737,9 @@ button[type="submit"] {
     z-index: 1;
     padding: 50px;
     overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(0, 242, 255, 0.3) transparent;
 }
 
+/* Safari & older Chrome — webkit scrollbar fallback */
 .modal-content::-webkit-scrollbar {
     width: 4px;
 }
@@ -1655,6 +1747,16 @@ button[type="submit"] {
 .modal-content::-webkit-scrollbar-thumb {
     background: rgba(0, 242, 255, 0.3);
     border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Chrome 121+ & Firefox — standard scrollbar */
+.modal-content {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 242, 255, 0.3) transparent;
 }
 
 .modal-close {
@@ -2407,4 +2509,28 @@ button[type="submit"] {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* Responsive adjustments for Clients Marquee */
+@media (max-width: 768px) {
+    .clients-section {
+        padding: 35px 0;
+    }
+    .clients-tagline {
+        font-size: 0.7rem;
+        letter-spacing: 0.2em;
+        margin-bottom: 20px;
+    }
+    .marquee-track {
+        gap: 25px;
+    }
+    .client-logo-item {
+        height: 55px;
+        padding: 8px 18px;
+    }
+    .client-logo {
+        max-height: 32px;
+        max-width: 110px;
+    }
+}
+
 

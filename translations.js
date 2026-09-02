@@ -18,6 +18,8 @@ const translations = {
         "hero-title": "Estrategia de <br> Negocios + <br> <span class='gradient-text'>Tecnología</span>",
         "hero-subtitle": "No solo automatizamos procesos. Diseñamos el cerebro operativo de tu empresa.",
         "btn-view-work": "Ver Soluciones",
+        "clients-tagline": "EMPRESAS Y PROFESIONALES QUE CONFÍAN EN NOSOTROS",
+        "clients-title": "Nuestros Clientes",
         
         // About
         "about-title": "El Puente entre <span class='gradient-text'>Estrategia & Tech</span>",
@@ -271,9 +273,11 @@ const translations = {
         "form-email": "Email",
         
         // Hero
-        "hero-title": "Business <br> Strategy + <br> <span class='gradient-text'>Technology</span>",
-        "hero-subtitle": "We don't just automate processes. We design the operational brain of your company.",
+        "hero-title": "Business Strategy + <br> <span class='gradient-text'>Technology</span>",
+        "hero-subtitle": "We don't just automate processes. We design your company's operational brain.",
         "btn-view-work": "View Solutions",
+        "clients-tagline": "COMPANIES AND PROFESSIONALS WHO TRUST US",
+        "clients-title": "Our Clients",
         
         // About
         "about-title": "The Bridge between <span class='gradient-text'>Strategy & Tech</span>",
@@ -526,6 +530,8 @@ const translations = {
         "hero-title": "Estratégia de <br> Negócios + <br> <span class='gradient-text'>Tecnologia</span>",
         "hero-subtitle": "Não apenas automatizamos processos. Projetamos o cérebro operacional da sua empresa.",
         "btn-view-work": "Ver Soluções",
+        "clients-tagline": "EMPRESAS E PROFISSIONAIS QUE CONFIAM EM NÓS",
+        "clients-title": "Nossos Clientes",
         
         // About
         "about-title": "A Ponte entre <span class='gradient-text'>Estratégia & Tech</span>",
