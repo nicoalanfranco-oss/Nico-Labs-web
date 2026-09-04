@@ -554,7 +554,7 @@ section {
 .marquee-track {
     display: flex;
     align-items: center;
-    gap: 45px;
+    gap: 80px;
     width: max-content;
     animation: marquee-scroll 35s linear infinite;
     will-change: transform;
@@ -2602,7 +2602,7 @@ button[type="submit"] {
         margin-bottom: 20px;
     }
     .marquee-track {
-        gap: 25px;
+        gap: 48px;
     }
     .client-logo-item {
         height: 55px;
