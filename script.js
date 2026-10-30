@@ -749,7 +749,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setupModal('project-comunicados', 'comunicados-modal');
     setupModal('project-redes', 'redes-modal');
     setupModal('project-chatbot', 'chatbot-modal');
-    setupModal('project-web', 'web-modal');
+    setupModal('project-web', 'web-modal');
+    setupModal('project-morfi', 'morfi-modal');
+    setupModal('project-repartos', 'repartos-modal');
 
     // Scroll Reveal Animations
     const revealElements = document.querySelectorAll('.reveal-left, .reveal-bottom, .reveal-right');

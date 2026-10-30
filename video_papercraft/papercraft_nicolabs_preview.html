@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nico Labs | Animación High-Tech IA WhatsApp Status</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #070e15;
+            --card-bg: rgba(13, 27, 42, 0.82);
+            --border-color: rgba(0, 210, 255, 0.35);
+            --primary: #00d2ff;
+            --primary-glow: rgba(0, 210, 255, 0.45);
+            --accent-green: #25d366;
+            --accent-gold: #f5af2d;
+            --text-main: #f0f6fc;
+            --text-muted: #8aa4bc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 20% 15%, rgba(0, 210, 255, 0.16) 0%, transparent 45%),
+                radial-gradient(circle at 80% 85%, rgba(37, 211, 102, 0.12) 0%, transparent 50%),
+                linear-gradient(rgba(0, 210, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 210, 255, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px 60px;
+        }
+
+        header {
+            text-align: center;
+            max-width: 860px;
+            margin-bottom: 35px;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 18px;
+            background: rgba(0, 210, 255, 0.12);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.25);
+        }
+
+        h1 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ffffff 40%, #00d2ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            line-height: 1.5;
+        }
+
+        /* MAIN LAYOUT */
+        .showcase-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+            align-items: flex-start;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* 3D PHONE MOCKUP */
+        .phone-wrapper {
+            perspective: 1200px;
+        }
+
+        .phone-frame {
+            width: 360px;
+            height: 640px;
+            background: #090e14;
+            border-radius: 44px;
+            border: 4px solid #1c3245;
+            box-shadow: 
+                0 25px 60px rgba(0, 0, 0, 0.75),
+                0 0 35px var(--primary-glow);
+            overflow: hidden;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+        }
+
+        .phone-frame:hover {
+            box-shadow: 
+                0 35px 80px rgba(0, 0, 0, 0.85),
+                0 0 55px rgba(0, 210, 255, 0.65);
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: 22px;
+            background: #060a0f;
+            border-radius: 14px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .notch-camera {
+            width: 9px;
+            height: 9px;
+            background: #14222e;
+            border-radius: 50%;
+        }
+
+        .notch-speaker {
+            width: 40px;
+            height: 4px;
+            background: #182836;
+            border-radius: 3px;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            cursor: pointer;
+            background: #09131d;
+        }
+
+        /* CONTROLS OVERLAY */
+        .video-overlay-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            background: linear-gradient(to top, rgba(6, 12, 18, 0.95), transparent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 8;
+        }
+
+        .overlay-btn {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .overlay-btn:hover {
+            background: var(--primary);
+            color: #0b141d;
+            transform: scale(1.08);
+        }
+
+        /* DETAILS SIDEBAR */
+        .details-panel {
+            flex: 1;
+            min-width: 320px;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        /* CHAPTER NAVIGATION */
+        .chapters-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .chapter-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 12px 14px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-main);
+        }
+
+        .chapter-btn:hover {
+            background: rgba(0, 210, 255, 0.14);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .chapter-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .chapter-name {
+            font-size: 0.92rem;
+            font-weight: 600;
+        }
+
+        /* SPECS TABLE */
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        .specs-table tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .specs-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .specs-table td {
+            padding: 10px 4px;
+        }
+
+        .specs-table td:first-child {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .specs-table td:last-child {
+            color: #fff;
+            font-weight: 600;
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88rem;
+        }
+
+        /* ACTION BUTTONS */
+        .action-row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 24px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.25s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d2ff, #0077b6);
+            color: #0b141d;
+            flex: 1;
+            box-shadow: 0 8px 20px rgba(0, 210, 255, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(0, 210, 255, 0.55);
+        }
+
+        .btn-whatsapp {
+            background: #25d366;
+            color: #0b141d;
+            flex: 1;
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-whatsapp:hover {
+            background: #20ba5a;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(37, 211, 102, 0.5);
+        }
+
+        .hint-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 6px;
+        }
+
+        /* STORYBOARD STRIP */
+        .storyboard-section {
+            max-width: 1200px;
+            width: 100%;
+            margin-top: 50px;
+        }
+
+        .storyboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .story-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .story-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .story-card img {
+            width: 100%;
+            aspect-ratio: 9/16;
+            object-fit: cover;
+            display: block;
+        }
+
+        .story-card-body {
+            padding: 12px;
+        }
+
+        .story-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .story-desc {
+            font-size: 0.85rem;
+            color: #fff;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.85rem; }
+            .phone-frame { width: 300px; height: 533px; border-radius: 36px; }
+            .chapters-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand-badge">
+            <i class="fas fa-microchip"></i> Nico Labs • AI & Automation Studio
+        </div>
+        <h1>Animación High-Tech: Estados de WhatsApp</h1>
+        <p class="subtitle">Video vertical Full HD (9:16) con estética Cyber Glassmorphism, red neuronal de partículas, logotipo máster 3D y banda sonora cinemática.</p>
+    </header>
+
+    <div class="showcase-container">
+        <!-- 3D INTERACTIVE PHONE VIEWER -->
+        <div class="phone-wrapper" id="phoneWrapper">
+            <div class="phone-frame" id="phoneFrame">
+                <div class="phone-notch">
+                    <div class="notch-camera"></div>
+                    <div class="notch-speaker"></div>
+                </div>
+
+                <video id="paperVideo" playsinline loop autoplay muted>
+                    <source src="nicolabs_papercraft_animacion.mp4" type="video/mp4">
+                    Tu navegador no soporta video MP4.
+                </video>
+
+                <div class="video-overlay-bar">
+                    <button class="overlay-btn" id="playBtn" title="Play / Pausa">
+                        <i class="fas fa-pause"></i>
+                    </button>
+                    <button class="overlay-btn" id="muteBtn" title="Activar / Silenciar Sonido">
+                        <i class="fas fa-volume-mute"></i>
+                    </button>
+                    <button class="overlay-btn" id="restartBtn" title="Reiniciar">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+            </div>
+            <p class="hint-text">💡 Mové el cursor sobre el teléfono para inclinarlo en 3D Parallax</p>
+        </div>
+
+        <!-- DETAILS PANEL -->
+        <div class="details-panel">
+            <div class="glass-card">
+                <h2 class="card-title"><i class="fas fa-film"></i> Capítulos de la Animación</h2>
+                <div class="chapters-grid">
+                    <button class="chapter-btn" onclick="jumpToTime(0.0)">
+                        <div class="chapter-time">00:00 - 02.4s</div>
+                        <div class="chapter-name">Diagnóstico Glassmorphic</div>
+                    </button>
+                    <button class="chapter-btn" onclick="jumpToTime(2.5)">
+                        <div class="chapter-time">02.5s - 05.2s</div>
+                        <div class="chapter-name">Isotipo 3D & Shimmer</div>
+                    </button>
+                    <button class="chapter-btn" onclick="jumpToTime(5.3)">
+                        <div class="chapter-time">05.3s - 08.4s</div>
+                        <div class="chapter-name">Nodos de IA Interconectados</div>
+                    </button>
+                    <button class="chapter-btn" onclick="jumpToTime(8.5)">
+                        <div class="chapter-time">08.5s - 12.0s</div>
+                        <div class="chapter-name">VIP Tech Pass & WhatsApp</div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h2 class="card-title"><i class="fas fa-sliders-h"></i> Especificaciones Técnicas</h2>
+                <table class="specs-table">
+                    <tr>
+                        <td>Formato & Relación</td>
+                        <td>MP4 (H.264 / AAC) • 9:16 Vertical</td>
+                    </tr>
+                    <tr>
+                        <td>Resolución</td>
+                        <td>1080 x 1920 Full HD</td>
+                    </tr>
+                    <tr>
+                        <td>Cuadros por Segundo</td>
+                        <td>30 FPS (360 Cuadros)</td>
+                    </tr>
+                    <tr>
+                        <td>Duración Total</td>
+                        <td>12.0 Segundos</td>
+                    </tr>
+                    <tr>
+                        <td>Peso del Archivo</td>
+                        <td>5.41 MB (Envío Directo sin Compresión)</td>
+                    </tr>
+                    <tr>
+                        <td>Diseño Sonoro</td>
+                        <td>Cinemático Electrónico + Sci-Fi Sub-Drop</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="action-row">
+                <a href="nicolabs_papercraft_animacion.mp4" download="nicolabs_ia_whatsapp.mp4" class="btn btn-primary">
+                    <i class="fas fa-download"></i> Descargar Video MP4
+                </a>
+                <a href="https://wa.me/59899075509?text=Hola%20Nico%20Labs!%20Vi%20el%20estado%20y%20quiero%20una%20demo%20a%20medida" target="_blank" class="btn btn-whatsapp">
+                    <i class="fab fa-whatsapp"></i> Probar Chatbot
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- STORYBOARD INSPECTION -->
+    <div class="storyboard-section">
+        <h2 class="card-title" style="font-size: 1.5rem;"><i class="fas fa-images"></i> Desglose Cuadro por Cuadro (Storyboard High-Tech)</h2>
+        <div class="storyboard-grid">
+            <div class="story-card">
+                <img src="thumbnails/tech_thumb_01_hook_glass.jpg" alt="01 Hook Glassmorphic">
+                <div class="story-card-body">
+                    <div class="story-time">Frame 20 (0.6s)</div>
+                    <div class="story-desc">1. Diagnóstico operativo en cristal ahumado</div>
+                </div>
+            </div>
+            <div class="story-card">
+                <img src="thumbnails/tech_thumb_02_master_3d_shimmer.jpg" alt="02 Master 3D Shimmer">
+                <div class="story-card-body">
+                    <div class="story-time">Frame 110 (3.6s)</div>
+                    <div class="story-desc">2. Isotipo Máster 3D con barrido de luz metálico</div>
+                </div>
+            </div>
+            <div class="story-card">
+                <img src="thumbnails/tech_thumb_03_solution_nodes.jpg" alt="03 Solution Nodes">
+                <div class="story-card-body">
+                    <div class="story-time">Frame 185 (6.1s)</div>
+                    <div class="story-desc">3. Nodos de Soluciones conectados por láser</div>
+                </div>
+            </div>
+            <div class="story-card">
+                <img src="thumbnails/tech_thumb_04_pricing_pill.jpg" alt="04 Pricing Pill">
+                <div class="story-card-body">
+                    <div class="story-time">Frame 240 (8.0s)</div>
+                    <div class="story-desc">4. Cápsula Pay-As-You-Use sin costos ocultos</div>
+                </div>
+            </div>
+            <div class="story-card">
+                <img src="thumbnails/tech_thumb_05_vip_whatsapp_pass.jpg" alt="05 VIP WhatsApp Pass">
+                <div class="story-card-body">
+                    <div class="story-time">Frame 315 (10.5s)</div>
+                    <div class="story-desc">5. VIP Pass con radar láser y sello de garantía</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('paperVideo');
+        const playBtn = document.getElementById('playBtn');
+        const muteBtn = document.getElementById('muteBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const phoneWrapper = document.getElementById('phoneWrapper');
+        const phoneFrame = document.getElementById('phoneFrame');
+
+        playBtn.addEventListener('click', () => {
+            if (video.paused) {
+                video.play();
+                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                video.pause();
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        });
+
+        muteBtn.addEventListener('click', () => {
+            if (video.muted) {
+                video.muted = false;
+                muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+            } else {
+                video.muted = true;
+                muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            }
+        });
+
+        restartBtn.addEventListener('click', () => {
+            video.currentTime = 0;
+            video.play();
+            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        });
+
+        function jumpToTime(sec) {
+            video.currentTime = sec;
+            video.play();
+            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        }
+
+        // 3D Tilt Parallax effect
+        phoneWrapper.addEventListener('mousemove', (e) => {
+            const rect = phoneFrame.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+            
+            const rotX = ((y - cy) / cy) * -14;
+            const rotY = ((x - cx) / cx) * 14;
+            
+            phoneFrame.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.02)`;
+        });
+
+        phoneWrapper.addEventListener('mouseleave', () => {
+            phoneFrame.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1.0)';
+        });
+    </script>
+</body>
+</html>
